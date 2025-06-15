@@ -98,6 +98,7 @@ class BudgetCalculator:
         """Calculate total gross income from all sources."""
         try:
             total_annual = Decimal('0')
+            total_monthly = Decimal('0')
             income_details = []
             
             for income in self.budget.gross_income_sources:
@@ -124,8 +125,9 @@ class BudgetCalculator:
                     per_paycheck = annual_amount / Decimal('26')  # Show as biweekly equivalent
                     monthly_amount = annual_amount / Decimal('12')
                 
-                # Add to total
+                # Add to totals
                 total_annual += annual_amount
+                total_monthly += monthly_amount
                 
                 # Add to income details
                 income_details.append({
@@ -139,7 +141,7 @@ class BudgetCalculator:
             
             return {
                 'annual': float(total_annual),
-                'monthly': float(total_annual / Decimal('12')),
+                'monthly': float(total_monthly),  # Use the sum of monthly amounts
                 'details': income_details
             }
         except Exception as e:
