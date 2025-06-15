@@ -673,7 +673,7 @@ def calculate(budget_id):
 
         # Transform budget_result to match template expectations
         template_budget_result = {
-            'monthly_gross_income': budget_result['gross_income']['monthly'],
+            'monthly_gross_income': sum(float(detail['monthly']) for detail in budget_result['gross_income']['details']),
             'monthly_net_income': budget_result['net_income']['monthly'],
             'total_expenses': sum(float(item.minimum_payment) for item in budget.budget_items),
             'remaining_money': float(budget_result['net_income']['monthly']) - sum(float(item.minimum_payment) for item in budget.budget_items),
@@ -689,7 +689,7 @@ def calculate(budget_id):
         # Transform tax_data to match template expectations
         template_tax_data = {
             'state': budget.profile.state,
-            'total_monthly_gross': float(budget_result['gross_income']['monthly']),
+            'total_monthly_gross': sum(float(detail['monthly']) for detail in budget_result['gross_income']['details']),
             'total_monthly_federal_tax': float(tax_data['federal']) / 12,
             'total_monthly_state_tax': float(tax_data['state']) / 12,
             'total_monthly_fica_tax': float(tax_data['fica']) / 12,
@@ -699,15 +699,18 @@ def calculate(budget_id):
 
         # Add income source details
         for source in budget.gross_income_sources:
-            source_tax = {
-                'source': source.source,
-                'gross_income': float(source.gross_income),
-                'federal_tax': float(tax_data['federal']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])),
-                'state_tax': float(tax_data['state']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])),
-                'fica_tax': float(tax_data['fica']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])),
-            }
-            source_tax['net_income'] = source_tax['gross_income'] - source_tax['federal_tax'] - source_tax['state_tax'] - source_tax['fica_tax']
-            template_tax_data['income_details'].append(source_tax)
+            # Find the corresponding detail in budget_result
+            source_detail = next((d for d in budget_result['gross_income']['details'] if d['source'] == source.source), None)
+            if source_detail:
+                source_tax = {
+                    'source': source.source,
+                    'gross_income': float(source_detail['monthly']),  # Use monthly amount
+                    'federal_tax': float(tax_data['federal']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])) / 12,
+                    'state_tax': float(tax_data['state']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])) / 12,
+                    'fica_tax': float(tax_data['fica']) * (float(source.gross_income) / float(budget_result['gross_income']['annual'])) / 12,
+                }
+                source_tax['net_income'] = source_tax['gross_income'] - source_tax['federal_tax'] - source_tax['state_tax'] - source_tax['fica_tax']
+                template_tax_data['income_details'].append(source_tax)
 
         # Update budget status to 'finalized'
         budget.status = 'finalized'
