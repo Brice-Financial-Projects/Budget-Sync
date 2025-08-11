@@ -7,38 +7,80 @@
 {% block content %}
 <div class="container my-4">
   <h2>Edit Budget: {{ budget.name }}</h2>
+  
   <form method="POST" action="{{ url_for('budget.edit_budget', budget_id=budget.id) }}">
     {{ form.hidden_tag() }}
 
     <!-- Budget Name -->
-    <div class="mb-3">
-      {{ form.budget_name.label(class="form-label") }}
-      {{ form.budget_name(class="form-control") }}
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Budget Information</h4>
+      </div>
+      <div class="card-body">
+        <div class="mb-3">
+          {{ form.budget_name.label(class="form-label") }}
+          {{ form.budget_name(class="form-control") }}
+        </div>
+      </div>
     </div>
 
-    <!-- Income -->
-    <div class="mb-3">
-      {{ form.income.label(class="form-label") }}
-      {{ form.income(class="form-control") }}
+    <!-- Budget Items -->
+    {% if budget_items %}
+    <div class="card mb-4">
+      <div class="card-header">
+        <h4>Expense Items</h4>
+        <p class="mb-0">Edit the names and payment amounts for your expenses.</p>
+      </div>
+      <div class="card-body">
+        {% for item in budget_items %}
+        <div class="row mb-3 border-bottom pb-3">
+          <div class="col-md-4">
+            <label for="item_name_{{ item.id }}" class="form-label">Expense Name</label>
+            <input 
+              type="text" 
+              class="form-control" 
+              id="item_name_{{ item.id }}" 
+              name="item_name_{{ item.id }}" 
+              value="{{ item.name }}"
+              required>
+          </div>
+          <div class="col-md-4">
+            <label for="min_payment_{{ item.id }}" class="form-label">Minimum Payment ($)</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="min_payment_{{ item.id }}" 
+              name="min_payment_{{ item.id }}" 
+              value="{{ item.minimum_payment }}"
+              min="0" 
+              step="0.01" 
+              required>
+          </div>
+          <div class="col-md-4">
+            <label for="pref_payment_{{ item.id }}" class="form-label">Preferred Payment ($)</label>
+            <input 
+              type="number" 
+              class="form-control" 
+              id="pref_payment_{{ item.id }}" 
+              name="pref_payment_{{ item.id }}" 
+              value="{{ item.preferred_payment }}"
+              min="0" 
+              step="0.01">
+          </div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
-
-    <!-- Pay Period -->
-    <div class="mb-3">
-      {{ form.pay_period.label(class="form-label") }}
-      {{ form.pay_period(class="form-select") }}
+    {% else %}
+    <div class="alert alert-info">
+      <p>No expense items found for this budget. You can add expenses by creating a new budget or editing the budget creation process.</p>
     </div>
+    {% endif %}
 
-    <!-- Rent -->
-    <div class="mb-3">
-      {{ form.rent.label(class="form-label") }}
-      {{ form.rent(class="form-control") }}
+    <div class="d-flex justify-content-between">
+      <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Cancel</a>
+      <button type="submit" class="btn btn-primary">Update Budget</button>
     </div>
-
-    <!-- You can optionally include additional fields (utilities, debts, loans, etc.) -->
-    <!-- For simplicity, only core fields are shown here -->
-
-    <button type="submit" class="btn btn-primary">Update Budget</button>
-    <a href="{{ url_for('main.dashboard') }}" class="btn btn-secondary">Cancel</a>
   </form>
 </div>
 {% endblock %}

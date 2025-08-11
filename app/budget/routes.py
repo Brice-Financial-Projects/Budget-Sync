@@ -12,6 +12,7 @@ from app.forms import CategorySelectionForm
 from app.helpers.budget_helpers import get_category_name
 from flask_wtf import FlaskForm
 from wtforms import SubmitField
+from app.forms import EditBudgetForm
 
 
 
@@ -336,25 +337,52 @@ def edit_budget(budget_id):
         flash("You are not authorized to edit this budget.", "danger")
         return redirect(url_for('main.dashboard'))
     
-    form = BudgetForm(obj=budget)  # Pre-fill form with existing budget data
+    # Get all budget items for this budget
+    budget_items = BudgetItem.query.filter_by(budget_id=budget.id).all()
+    
+    # Create the main budget form
+    form = EditBudgetForm(obj=budget)
     
     if form.validate_on_submit():
-        # Update budget fields with submitted form data
-        budget.name = form.budget_name.data
-        budget.gross_income = form.income.data or 0
-        budget.pay_cycle = form.pay_cycle.data
-        budget.retirement_contribution = form.retirement_contribution.data or 0
-        budget.benefit_deductions = form.benefit_deductions.data or 0
-
         try:
+            # Update budget name
+            budget.name = form.budget_name.data
+            
+            # Process budget item updates
+            for item in budget_items:
+                item_name_key = f"item_name_{item.id}"
+                min_payment_key = f"min_payment_{item.id}"
+                pref_payment_key = f"pref_payment_{item.id}"
+                
+                # Update item name if provided
+                if item_name_key in request.form:
+                    item.name = request.form[item_name_key]
+                
+                # Update minimum payment if provided
+                if min_payment_key in request.form and request.form[min_payment_key]:
+                    try:
+                        item.minimum_payment = float(request.form[min_payment_key])
+                    except ValueError:
+                        flash(f"Invalid minimum payment for {item.name}", "danger")
+                        continue
+                
+                # Update preferred payment if provided
+                if pref_payment_key in request.form and request.form[pref_payment_key]:
+                    try:
+                        item.preferred_payment = float(request.form[pref_payment_key])
+                    except ValueError:
+                        flash(f"Invalid preferred payment for {item.name}", "danger")
+                        continue
+            
             db.session.commit()
             flash("Budget updated successfully!", "success")
             return redirect(url_for('main.dashboard'))
         except Exception as e:
             db.session.rollback()
             flash("An error occurred while updating your budget. Please try again.", "danger")
+            print(f"Error updating budget: {str(e)}")
     
-    return render_template('budget/edit_budget.html', form=form, budget=budget)
+    return render_template('budget/edit_budget.html', form=form, budget=budget, budget_items=budget_items)
 
 
 @budget_bp.route('/delete/<int:budget_id>', methods=['POST'])

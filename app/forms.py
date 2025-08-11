@@ -62,6 +62,20 @@ class BudgetForm(FlaskForm):
     submit = SubmitField('Calculate Budget')
 
 
+class BudgetItemEditForm(FlaskForm):
+    """Form for editing individual budget items."""
+    item_name = StringField('Expense Name', validators=[DataRequired()])
+    minimum_payment = FloatField('Minimum Payment', validators=[DataRequired(), NumberRange(min=0)])
+    preferred_payment = FloatField('Preferred Payment', validators=[Optional(), NumberRange(min=0)])
+    submit = SubmitField('Update Item')
+
+
+class EditBudgetForm(FlaskForm):
+    """Form for editing a budget with its items."""
+    budget_name = StringField('Budget Name', validators=[DataRequired()])
+    submit = SubmitField('Update Budget')
+
+
 class OtherIncomeField(FlaskForm):
     """Form field for additional income sources."""
     category = SelectField(
