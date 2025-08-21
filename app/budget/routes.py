@@ -783,6 +783,7 @@ def download_budget(budget_id):
     try:
         # Calculate tax withdrawals
         tax_data = calculate_tax_withholdings(budget, income_sources, profile)
+        # see app.budget.budget_logic.py for current tax withholding logic.  Class BudgetCalculator - method calculate_tax_withholdings
 
         
         # Calculate the final budget

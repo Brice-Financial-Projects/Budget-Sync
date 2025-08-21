@@ -21,6 +21,7 @@ Entries are organized with the **most recent updates at the top**.
 - Implement password recovery flow.
 - Replace generic tax logic with state-specific JSON data.
 - Transition JSON tax logic into a dedicated Tax API.
+  - see app.budget.budget_logic.py for current tax withholding logic.  Class BudgetCalculator - method calculate_tax_withholdings
 - Migrate from local DB to AWS RDS.
 
 ---
