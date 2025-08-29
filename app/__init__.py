@@ -44,8 +44,7 @@ def create_app():
         app.config.from_object(ProductionConfig)
         print("🔧 Using Production Configuration")
         
-    # Make sure CSRF is enabled
-    app.config['WTF_CSRF_ENABLED'] = True
+    # Check if CSRF is enabled
     print(f"🔧 CSRF Protection enabled: {app.config.get('WTF_CSRF_ENABLED', False)}")
     
     # Initialize extensions
