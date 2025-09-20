@@ -8,7 +8,7 @@ def test_weather_page(auth_client):
     assert response.status_code == 200
     assert b'Weather Information' in response.data
 
-@patch('app.weather.weather_service.Weather')
+@patch('budget_sync.weather.weather_service.Weather')
 def test_weather_search_success(mock_weather, auth_client):
     """Test successful weather search."""
     # Mock the weather service
@@ -37,7 +37,7 @@ def test_weather_search_success(mock_weather, auth_client):
     assert b'72' in response.data
     assert b'clear sky' in response.data
 
-@patch('app.weather.weather_service.Weather')
+@patch('budget_sync.weather.weather_service.Weather')
 def test_weather_search_error(mock_weather, auth_client):
     """Test weather search with invalid location."""
     # Mock the weather service to return None for location

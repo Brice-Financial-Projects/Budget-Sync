@@ -1,0 +1,43 @@
+<!--budget_sync/templates/budget/budget_input.html-->
+
+{% extends '../base.html' %}
+
+{% block title %}Input Budget Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Input Budget Details</h2>
+  
+    <form method="POST" action="{{ url_for('budget.input_budget') }}">
+      {{ form.hidden_tag() }}
+      
+      {% for category, items in categories.items() %}
+        <div class="card mb-3">
+          <div class="card-header">
+            {{ category if category else "Untitled Category" }}
+          </div>
+          <div class="card-body">
+            {% if items %}
+              {% for item in items %}
+                <div class="row mb-3">
+                  <div class="col-md-12"> <!-- Adjusted to full width -->
+                    <label for="min_{{ item }}" class="form-label">{{ item }} - Minimum Payment</label>
+                    <input type="number" class="form-control" name="min_{{ item }}" id="min_{{ item }}" placeholder="Enter minimum payment">
+                  </div>
+                </div>
+              {% endfor %}
+            {% else %}
+              <p>No subcategories provided for this category.</p>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+      
+      <button type="submit" class="btn btn-primary w-100">Next: Income Details</button>
+    </form>
+</div>
+{% endblock %}
+
+
+
+

@@ -1,0 +1,219 @@
+{% extends '../base.html' %}
+
+{% block title %}Budget Results{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="text-center mb-4">{{ budget.name }} - Budget Results</h1>
+    
+    <!-- Summary Card -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Budget Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>Income</h5>
+                            <p><strong>Total Monthly Gross Income:</strong> ${{ budget_result.monthly_gross_income | round(2) }}</p>
+                            <p><strong>Total Monthly Net Income:</strong> ${{ budget_result.monthly_net_income | round(2) }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h5>Expenses</h5>
+                            <p><strong>Total Monthly Expenses:</strong> ${{ budget_result.total_expenses | round(2) }}</p>
+                            <p><strong>Remaining Money:</strong> 
+                                <span class="{% if budget_result.remaining_money < 0 %}text-danger{% else %}text-success{% endif %}">
+                                    ${{ budget_result.remaining_money | round(2) }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
+
+                    {% if budget_result.remaining_money < 0 %}
+                    <div class="alert alert-danger mt-3">
+                        <h5><i class="fas fa-exclamation-triangle"></i> Warning!</h5>
+                        <p>Your budget is in deficit. You're spending ${{ (budget_result.remaining_money * -1) | round(2) }} more than you earn each month. Consider reducing expenses or finding additional income sources.</p>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-success mt-3">
+                        <h5><i class="fas fa-check-circle"></i> Good job!</h5>
+                        <p>Your budget is balanced! You have ${{ budget_result.remaining_money | round(2) }} available for savings or discretionary spending each month.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tax Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h4 class="mb-0">Tax Breakdown</h4>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Source</th>
+                                    <th>Gross Income</th>
+                                    <th>Federal Tax</th>
+                                    <th>State Tax ({{ tax_data.state }})</th>
+                                    <th>FICA (SS + Medicare)</th>
+                                    <th>Net Income</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for income in tax_data.income_details %}
+                                <tr>
+                                    <td>{{ income.source }}</td>
+                                    <td>${{ income.gross_income | round(2) }}</td>
+                                    <td>${{ income.federal_tax | round(2) }}</td>
+                                    <td>${{ income.state_tax | round(2) }}</td>
+                                    <td>${{ income.fica_tax | round(2) }}</td>
+                                    <td>${{ income.net_income | round(2) }}</td>
+                                </tr>
+                                {% endfor %}
+                                <tr class="table-primary">
+                                    <td><strong>Total Monthly</strong></td>
+                                    <td><strong>${{ tax_data.total_monthly_gross | round(2) }}</strong></td>
+                                    <td><strong>${{ tax_data.total_monthly_federal_tax | round(2) }}</strong></td>
+                                    <td><strong>${{ tax_data.total_monthly_state_tax | round(2) }}</strong></td>
+                                    <td><strong>${{ tax_data.total_monthly_fica_tax | round(2) }}</strong></td>
+                                    <td><strong>${{ tax_data.total_monthly_net | round(2) }}</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info mt-3">
+                        <p>
+                            <small>This is an estimate based on your income and state of residence. Actual tax withholdings may vary based on your filing status, deductions, and other factors. Consult a tax professional for personalized advice.</small>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Expense Breakdown -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h4 class="mb-0">Expense Breakdown</h4>
+                </div>
+                <div class="card-body">
+                    {% if budget_result.expenses_by_category %}
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="table-responsive">
+                                <table class="table table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Category</th>
+                                            <th>Amount</th>
+                                            <th>% of Budget</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for category, amount in budget_result.expenses_by_category.items() %}
+                                        <tr>
+                                            <td>{{ category | capitalize }}</td>
+                                            <td>${{ amount | round(2) }}</td>
+                                            <td>{{ ((amount / budget_result.total_expenses) * 100) | round(1) }}%</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr class="table-success">
+                                            <td><strong>Total</strong></td>
+                                            <td><strong>${{ budget_result.total_expenses | round(2) }}</strong></td>
+                                            <td><strong>100%</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <canvas id="expenseChart" width="400" height="400"></canvas>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-warning">
+                        <p>No expense items found in the budget.</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="row">
+        <div class="col-md-12 text-center mb-4">
+            <a href="{{ url_for('budget.preview') }}" class="btn btn-secondary btn-lg">Back to Preview</a>
+            <a href="{{ url_for('main.dashboard') }}" class="btn btn-primary btn-lg">Back to Dashboard</a>
+            <button class="btn btn-success btn-lg" disabled title="This feature is coming soon!" style="opacity: 0.6; cursor: not-allowed;">
+                Download Budget as Excel
+                <small class="d-block">(Coming Soon)</small>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Chart.js for the pie chart -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const ctx = document.getElementById('expenseChart').getContext('2d');
+        
+        // Extract data from the template
+        const categories = [
+            {% for category, amount in budget_result.expenses_by_category.items() %}
+                '{{ category | capitalize }}',
+            {% endfor %}
+        ];
+        
+        const amounts = [
+            {% for category, amount in budget_result.expenses_by_category.items() %}
+                {{ amount }},
+            {% endfor %}
+        ];
+        
+        // Generate random colors
+        const colors = categories.map(() => {
+            const r = Math.floor(Math.random() * 255);
+            const g = Math.floor(Math.random() * 255);
+            const b = Math.floor(Math.random() * 255);
+            return `rgba(${r}, ${g}, ${b}, 0.7)`;
+        });
+        
+        // Create the pie chart
+        new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: categories,
+                datasets: [{
+                    data: amounts,
+                    backgroundColor: colors,
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Expense Distribution'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %} 

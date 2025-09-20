@@ -1,7 +1,5 @@
 """Test budget routes and functionality."""
-import pytest
-from flask import url_for, session
-from app.models import Budget, BudgetItem, GrossIncome, ExpenseTemplate, ExpenseCategory
+from src.budget_sync import Budget, BudgetItem, GrossIncome
 import time
 import random
 
@@ -567,7 +565,7 @@ def test_edit_budget(auth_client, test_budget):
     """Test editing a budget including budget name and expense items."""
     try:
         # First, create some budget items for the test budget
-        from app.models import BudgetItem
+        from src.budget_sync import BudgetItem
         
         # Create a test budget item
         budget_item = BudgetItem(
@@ -579,7 +577,7 @@ def test_edit_budget(auth_client, test_budget):
         )
         
         # Add to database
-        from app import db
+        from src.budget_sync import db
         db.session.add(budget_item)
         db.session.commit()
         

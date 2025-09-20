@@ -48,7 +48,7 @@ A comprehensive budgeting application that helps users manage their finances, tr
 1. Clone the repository:
 ```bash
 git clone <repository-url>
-cd financial-app
+cd financial-budget_sync
 ```
 
 2. Create and activate a virtual environment:

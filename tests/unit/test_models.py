@@ -1,7 +1,6 @@
 """Unit tests for database models."""
-import pytest
 from datetime import datetime, date
-from app.models import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+from src.budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
 
 def test_new_user():
     """

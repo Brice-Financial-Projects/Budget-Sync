@@ -1,0 +1,56 @@
+{% extends '../base.html' %}
+
+{% block title %}Review Expense Selections{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mb-4">Review & Personalize Expenses</h1>
+  
+  <div class="card mb-4">
+    <div class="card-body">
+      <p class="mb-4">Review your selected expenses and personalize them as needed. You can customize the names to match your specific expenses.</p>
+      
+      <form method="POST" action="{{ url_for('budget.review_expenses', budget_id=budget_id) }}">
+        {{ form.hidden_tag() }}
+        
+        <!-- Expense Categories -->
+        {% for category in categories %}
+        {% if category.selected_expenses %}
+        <div class="card mb-3">
+          <div class="card-header bg-light">
+            <h5>{{ category.name }}</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              {% for expense in category.selected_expenses %}
+              <div class="col-md-6 mb-3">
+                <div class="form-group">
+                  <label for="expense-name-{{ expense.id }}">
+                    <strong>{{ expense.name }}</strong>
+                  </label>
+                  <input 
+                    type="text" 
+                    class="form-control" 
+                    id="expense-name-{{ expense.id }}" 
+                    name="expense_name_{{ expense.id }}" 
+                    value="{{ expense.name }}"
+                    placeholder="Enter a personalized name">
+                  <input type="hidden" name="expense_ids" value="{{ expense.id }}">
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+        
+        <div class="d-flex justify-content-between mt-4">
+          <a href="{{ url_for('budget.select_expenses', budget_id=budget_id) }}" class="btn btn-secondary">Edit Selections</a>
+          <button type="submit" class="btn btn-primary">Next</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %} 

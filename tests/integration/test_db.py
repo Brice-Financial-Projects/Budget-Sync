@@ -1,8 +1,8 @@
 """Integration tests for database operations."""
 import pytest
-from app import db
-from app.models import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
-from datetime import date
+from src.budget_sync import db
+from src.budget_sync import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
+
 
 def test_user_profile_relationship(test_db):
     """

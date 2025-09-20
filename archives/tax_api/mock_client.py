@@ -1,6 +1,6 @@
 """Mock client for the tax rate API that uses sample data."""
 
-# app/api/tax_rates/mock_client.py
+# budget_sync/api/tax_rates/mock_client.py
 
 import logging
 from typing import Dict, Any, List

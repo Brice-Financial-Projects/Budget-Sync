@@ -1,8 +1,7 @@
 # scripts/populate_state_data.py
 
-from app import create_app, db
-from app.api.tax_rates.models import StateInfo, StateTaxBracket
-from datetime import datetime
+from src.budget_sync import create_app, db
+from src.budget_sync import StateInfo, StateTaxBracket
 
 
 def populate_state_info():

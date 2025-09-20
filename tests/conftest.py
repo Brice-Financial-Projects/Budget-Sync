@@ -1,8 +1,8 @@
 """Test configuration and fixtures."""
 import pytest
-from app import create_app, db
-from app.models import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
-from flask_login import current_user, login_user
+from src.budget_sync import create_app, db
+from src.budget_sync import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
+from flask_login import login_user
 
 @pytest.fixture
 def app():

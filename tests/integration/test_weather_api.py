@@ -1,7 +1,7 @@
 """Integration tests for weather API interactions."""
 import pytest
 from unittest.mock import patch, MagicMock
-from app.weather.weather_service import Weather
+from src.budget_sync.weather.weather_service import Weather
 
 @pytest.fixture
 def weather_service():
@@ -14,7 +14,7 @@ def test_get_weather_for_location(weather_service):
     WHEN requesting weather data for a valid location
     THEN check that the API calls are made correctly and data is returned
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
         # Mock the geocoding API response
         geo_response = MagicMock()
         geo_response.status_code = 200
@@ -53,7 +53,7 @@ def test_api_error_handling(weather_service):
     WHEN the API returns an error
     THEN check that errors are handled gracefully
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
         # Mock API error response
         error_response = MagicMock()
         error_response.status_code = 404
@@ -69,7 +69,7 @@ def test_api_timeout_handling(weather_service):
     WHEN the API request times out
     THEN check that the timeout is handled gracefully
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
         # Mock timeout exception
         mock_get.side_effect = TimeoutError()
 

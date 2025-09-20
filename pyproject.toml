@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "budget-sync"
+version = "0.1.0"
+description = "Personal Budget Management Application"
+requires-python = ">=3.8"
+dependencies = [
+    "flask",
+    "flask-sqlalchemy",
+    "flask-migrate",
+    "flask-cors",
+    "flask-bcrypt",
+    "flask-login",
+    "flask-session",
+    "flask-debugtoolbar",
+    "flask-wtf",
+    "wtforms",
+    "python-dotenv",
+    "redis",
+    "requests",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-dir]
+"" = "src"
+

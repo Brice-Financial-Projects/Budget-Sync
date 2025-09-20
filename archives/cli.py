@@ -1,9 +1,9 @@
-# app/cli.py
+# budget_sync/cli.py
 
 import click
 from flask.cli import with_appcontext
-from app import db
-from app.api.tax_rates.models import StateInfo, StateTaxBracket
+from src.budget_sync import db
+from src.budget_sync import StateInfo, StateTaxBracket
 
 
 @click.group()
@@ -108,6 +108,6 @@ def view_tax_brackets(state, year):
 
 
 def init_app(app):
-    """Register CLI commands with the app."""
+    """Register CLI commands with the budget_sync."""
     app.cli.add_command(tax_cli)
 
