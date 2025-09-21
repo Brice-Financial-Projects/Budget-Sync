@@ -4,7 +4,7 @@ from flask_login import login_required
 from ..weather.weather_service import Weather
 from ..weather.forms import WeatherForm
 
-weather_bp = Blueprint('weather', __name__, template_folder='templates')
+weather_bp = Blueprint('weather', __name__)
 
 @weather_bp.route('/weather', methods=['GET', 'POST'])
 @login_required
@@ -34,7 +34,7 @@ def weather_form():
                     radar_url = weather.get_radar_map(lat, lon)
                     
                     # Pass weather data to the template
-                    return render_template('weather/../templates/weather/weather_form.html',
+                    return render_template('weather/weather_form.html',
                                            form=form,
                                            weather_data=weather_data,
                                            city=city,
@@ -51,4 +51,4 @@ def weather_form():
             flash(f"Network error: {str(e)}", "error")
 
     # For GET requests or if form validation fails, render the form
-    return render_template('weather/../templates/weather/weather_form.html', form=form)
+    return render_template('weather/weather_form.html', form=form)

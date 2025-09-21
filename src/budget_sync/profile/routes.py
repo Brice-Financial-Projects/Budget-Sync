@@ -90,6 +90,6 @@ def profile_view():
             form.fsa_contribution.data = user_profile.fsa_contribution
             form.other_pretax_benefits.data = user_profile.other_pretax_benefits
 
-    return render_template('profile/../templates/profile/profile.html', form=form)
+    return render_template('profile/profile.html', form=form)
 
 

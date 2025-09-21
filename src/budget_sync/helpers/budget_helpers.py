@@ -44,7 +44,7 @@ def get_category_name(category_type, item_id):
 
 def populate_expense_categories(db):
     """Populate the database with predefined expense categories and templates."""
-    from src.budget_sync.models import ExpenseCategory, ExpenseTemplate
+    from budget_sync.models import ExpenseCategory, ExpenseTemplate
 
     # Check if categories already exist
     if ExpenseCategory.query.first():

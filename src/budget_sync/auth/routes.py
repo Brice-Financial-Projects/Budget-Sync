@@ -34,7 +34,7 @@ def register():
             flash('An account with this email already exists. Please log in.', 'danger')
             return redirect(url_for('auth.login'))
     
-    return render_template('auth/../templates/auth/register.html', form=form)
+    return render_template('auth/register.html', form=form)
 
 
 
@@ -75,7 +75,7 @@ def login():
         next_page = request.args.get('next')
         return redirect(next_page) if next_page else redirect(url_for('main.dashboard'))
 
-    return render_template('auth/../templates/auth/login.html', form=form)
+    return render_template('auth/login.html', form=form)
 
 
 

@@ -14,7 +14,7 @@ from budget_sync.forms import EditBudgetForm
 
 
 
-budget_bp = Blueprint('budget', __name__, template_folder='budget')
+budget_bp = Blueprint('budget', __name__)
 
 @budget_bp.route('/input', methods=['GET', 'POST'])
 @login_required
@@ -99,7 +99,7 @@ def input_budget():
         return redirect(url_for('budget.income'))  # ✅ Redirecting to Income Entry!
 
     print("DEBUG: GET request received - Rendering Budget Input Form")
-    return render_template('budget/../templates/budget/budget_input.html', categories=categories, form=form)
+    return render_template('budget/budget_input.html', categories=categories, form=form)
 
 
 @budget_bp.route('/income', methods=['GET', 'POST'])
@@ -244,7 +244,7 @@ def income():
         form.gross_income_frequency.data = primary_income.frequency
     
     # Return the form without any empty entries if none exist in the database
-    return render_template('budget/../templates/budget/income.html', form=form, other_income=income_entries)
+    return render_template('budget/income.html', form=form, other_income=income_entries)
 
 
 @budget_bp.route('/payments/<int:budget_id>', methods=['GET', 'POST'])
@@ -303,7 +303,7 @@ def set_payment_amounts(budget_id):
     # Create sorted categories list for UI
     sorted_categories = sorted(items_by_category.keys())
     
-    return render_template('budget/../templates/budget/payment_amounts.html',
+    return render_template('budget/payment_amounts.html',
                            form=form,
                            budget=budget,
                            items_by_category=items_by_category,
@@ -322,7 +322,7 @@ def view_budget(budget_id):
 
     budget_items = BudgetItem.query.filter_by(budget_id=budget.id).all()
 
-    return render_template('budget/../templates/budget/view_budget.html', budget=budget, budget_items=budget_items)
+    return render_template('budget/view_budget.html', budget=budget, budget_items=budget_items)
 
 @budget_bp.route('/edit/<int:budget_id>', methods=['GET', 'POST'])
 @login_required
@@ -379,7 +379,7 @@ def edit_budget(budget_id):
             flash("An error occurred while updating your budget. Please try again.", "danger")
             print(f"Error updating budget: {str(e)}")
     
-    return render_template('budget/../templates/budget/edit_budget.html', form=form, budget=budget, budget_items=budget_items)
+    return render_template('budget/edit_budget.html', form=form, budget=budget, budget_items=budget_items)
 
 
 @budget_bp.route('/delete/<int:budget_id>', methods=['POST'])
@@ -454,7 +454,7 @@ def budget_name():
             flash(f"An error occurred while creating your budget: {str(e)}", "danger")
             return redirect(url_for('budget.budget_name'))
 
-    return render_template('budget/../templates/budget/name.html', form=form, existing_budgets=existing_budgets)
+    return render_template('budget/name.html', form=form, existing_budgets=existing_budgets)
 
 
 @budget_bp.route('/select_expenses/<int:budget_id>', methods=['GET', 'POST'])
@@ -500,7 +500,7 @@ def select_expenses(budget_id):
             'expenses': expenses
         })
     
-    return render_template('budget/../templates/budget/expense_selection.html',
+    return render_template('budget/expense_selection.html',
                            form=form,
                            budget_id=budget_id,
                            categories=categories_data)
@@ -592,7 +592,7 @@ def review_expenses(budget_id):
     # Sort categories by priority (get priority from ExpenseCategory)
     categories_data.sort(key=lambda c: ExpenseCategory.query.get(c['id']).priority)
     
-    return render_template('budget/../templates/budget/expense_review.html',
+    return render_template('budget/expense_review.html',
                            form=form,
                            budget_id=budget_id,
                            categories=categories_data)
@@ -652,7 +652,7 @@ def preview():
     
     # Return the budget review template with all data
     return render_template(
-        'budget/../templates/budget/preview.html',
+        'budget/preview.html',
         budget=budget,
         primary_income=primary_income,
         other_income=other_income,
@@ -743,7 +743,7 @@ def calculate(budget_id):
         current_app.logger.debug("Budget status updated to finalized")
 
         return render_template(
-            'budget/../templates/budget/results.html',
+            'budget/results.html',
             budget=budget,
             income_sources=budget.gross_income_sources,
             budget_items=budget.budget_items,
