@@ -5,6 +5,10 @@ The `budget_sync` project originally did **not** use an `src/` layout. As the co
 
 ## Issues Encountered
 
+--------------------------------------------------------
+Date: September 6, 2025
+--------------------------------------------------------
+
 ### 1. PyCharm Project Root
 - After moving code into `src/`, PyCharm continued to treat the old structure as the project root.
 - This caused unresolved reference warnings across the project.
@@ -23,6 +27,10 @@ The `budget_sync` project originally did **not** use an `src/` layout. As the co
 ### 4. Branch Cleanup
 - Multiple failed attempts to restructure left stale branches with broken imports and inconsistent configs.
 - **Resolution:** Deleted the old branches and restarted with a clean, consistent `src/` layout from scratch.
+
+--------------------------------------------------------
+Date: September 21, 2025
+--------------------------------------------------------
 
 ### 5. Flask Template Path Issues
 - After the `src/` restructuring, Flask couldn't find templates due to incorrect relative paths.
