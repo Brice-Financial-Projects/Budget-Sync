@@ -1,6 +1,11 @@
 """Unit tests for database models."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from datetime import datetime, date
 from budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+
 
 def test_new_user():
     """

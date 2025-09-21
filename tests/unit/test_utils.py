@@ -1,5 +1,10 @@
 """Unit tests for utility functions."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from budget_sync.utils import safe_str_cmp
+
 
 def test_safe_str_cmp_with_strings():
     """

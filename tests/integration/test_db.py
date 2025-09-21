@@ -1,4 +1,8 @@
 """Integration tests for database operations."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
 from budget_sync import db
 from budget_sync import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate

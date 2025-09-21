@@ -1,7 +1,12 @@
 """Test budget routes and functionality."""
-from budget_sync import Budget, BudgetItem, GrossIncome
+
 import time
 import random
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+from budget_sync import Budget, BudgetItem, GrossIncome
+
 
 def test_budget_dashboard(auth_client, test_budget):
     """Test budget dashboard loads."""
@@ -72,71 +77,33 @@ def test_expense_selection(auth_client, test_profile, test_expense_category, tes
     assert selected_expenses is not None
     assert str(test_expense_template.id) in selected_expenses
 
-def test_expense_review_personalization(auth_client, test_profile, test_expense_category, test_expense_template):
+
+def test_expense_review_personalization(auth_client, test_budget, test_expense_template):
     """Test the expense personalization step of budget creation."""
-    try:
-        # First create a budget and select expenses
-        test_budget_name_creation(auth_client, test_profile)
-        budget_id = test_budget_name_creation.budget_id
-        
-        # Ensure we have a budget ID from either the test_budget_name_creation function or the session
-        if not budget_id:
-            with auth_client.session_transaction() as sess:
-                budget_id = sess.get('budget_id')
-                
-            # If still no budget_id, create a new one
-            if not budget_id:
-                # Create a new budget
-                unique_budget_name = f"Test Budget {int(time.time())}-{random.randint(1000, 9999)}"
-                auth_client.post('/budget/name', data={'budget_name': unique_budget_name})
-                budget = Budget.query.filter_by(name=unique_budget_name).first()
-                budget_id = budget.id
-                
-                # Update session
-                with auth_client.session_transaction() as sess:
-                    sess['budget_id'] = budget_id
-                
-        # Make sure we've selected expenses
-        test_expense_selection(auth_client, test_profile, test_expense_category, test_expense_template)
-        
-        # Now go to the expense review page
-        response = auth_client.get(f'/budget/review_expenses/{budget_id}')
-        assert response.status_code == 200
-        assert b'Review & Personalize Expenses' in response.data
-        
-        # Personalize an expense
-        personalized_name = 'My Custom Rent Name'
-        response = auth_client.post(f'/budget/review_expenses/{budget_id}', data={
-            f'expense_name_{test_expense_template.id}': personalized_name,
-            'expense_ids': test_expense_template.id
-        })
-        
-        # Should redirect to the income page
-        assert response.status_code == 302
-        
-        # Follow the redirect and handle possible additional redirects
-        max_redirects = 3
-        redirect_count = 0
-        
-        while response.status_code == 302 and redirect_count < max_redirects:
-            redirect_count += 1
-            response = auth_client.get(response.location)
-        
-        assert response.status_code == 200
-        
-        # The page should now be the income page or dashboard if there was an error
-        # Let's look for patterns that would appear in both
-        assert b'budget' in response.data.lower()
-        
-        # Verify budget items were created
-        budget_items = BudgetItem.query.filter_by(budget_id=budget_id).all()
-        assert len(budget_items) > 0
-        
-        # Check if at least one item has our personalized name
-        assert any(item.name == personalized_name for item in budget_items)
-    except Exception as e:
-        print(f"Error in expense_review_personalization test: {str(e)}")
-        # Continue with other tests
+    # Setup: Ensure budget exists and has selected expenses
+    budget_id = test_budget.id
+
+    # Test: Go to expense review page
+    response = auth_client.get(f'/budget/review_expenses/{budget_id}')
+    assert response.status_code == 200
+    assert b'Review & Personalize Expenses' in response.data
+
+    # Test: Personalize expense
+    personalized_name = 'My Custom Rent Name'
+    response = auth_client.post(f'/budget/review_expenses/{budget_id}', data={
+        f'expense_name_{test_expense_template.id}': personalized_name,
+        'expense_ids': test_expense_template.id
+    })
+
+    # Assert: Redirect occurred
+    assert response.status_code == 302
+
+    # Assert: Budget item was created with personalized name
+    budget_item = BudgetItem.query.filter_by(
+        budget_id=budget_id,
+        name=personalized_name
+    ).first()
+    assert budget_item is not None
 
 def test_income_entry(auth_client, test_profile, test_expense_category, test_expense_template):
     """Test the income entry step of budget creation."""

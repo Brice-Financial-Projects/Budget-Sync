@@ -1,8 +1,13 @@
 """Test configuration and fixtures."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
 from budget_sync import create_app, db
 from budget_sync import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
 from flask_login import login_user
+
 
 @pytest.fixture
 def app():

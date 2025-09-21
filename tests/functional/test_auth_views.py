@@ -1,6 +1,11 @@
 """Functional tests for authentication views."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
 from flask import url_for
+
 
 def test_register_page(client):
     """Test registration page loads."""
