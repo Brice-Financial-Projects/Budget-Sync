@@ -4,4 +4,4 @@ from flask import Blueprint
 
 auth_bp = Blueprint('auth', __name__, template_folder='templates')
 
-from src.budget_sync.auth import routes
+from budget_sync.auth import routes

@@ -4,4 +4,4 @@ from flask import Blueprint
 
 profile_bp = Blueprint('profile', __name__, template_folder='templates')
 
-from src.budget_sync.profile import routes  # noqa: E402, F401
+from budget_sync.profile import routes  # noqa: E402, F401
