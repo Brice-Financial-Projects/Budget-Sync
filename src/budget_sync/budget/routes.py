@@ -2,14 +2,14 @@
 
 from flask import Blueprint, render_template, request, redirect, current_app, url_for, flash, session
 from flask_login import login_required, current_user
-from src.budget_sync import db
-from src.budget_sync.models import Budget, BudgetItem, Profile, GrossIncome, ExpenseCategory, ExpenseTemplate
-from src.budget_sync.forms import BudgetForm, IncomeForm
-from src.budget_sync.budget.budget_logic import BudgetCalculator
+from budget_sync import db
+from budget_sync.models import Budget, BudgetItem, Profile, GrossIncome, ExpenseCategory, ExpenseTemplate
+from budget_sync.forms import BudgetForm, IncomeForm
+from budget_sync.budget.budget_logic import BudgetCalculator
 from contextlib import contextmanager
 from flask_wtf import FlaskForm
 from wtforms import SubmitField
-from src.budget_sync.forms import EditBudgetForm
+from budget_sync.forms import EditBudgetForm
 
 
 
@@ -836,105 +836,3 @@ def safe_transaction():
     except Exception as e:
         db.session.rollback()
         raise e
-
-
-# @budget_bp.route('/input', methods=['GET', 'POST'])
-# def input_budget():
-#     form = BudgetForm()
-#     if form.validate_on_submit():
-#         # Process form data and redirect to /results
-#         user_data = {
-#             'income': form.income.data or 0,
-#             'pay_period': form.pay_period.data,
-#             'rent': form.rent.data or 0,
-#             'utilities': {
-#                 'electricity': form.utilities.electricity.data or 0,
-#                 'water': form.utilities.water.data or 0,
-#                 'internet': form.utilities.internet.data or 0,
-#                 'gas': form.utilities.gas.data or 0,
-#             },
-#             'debts': {
-#                 'card1': form.debts.card1.data or 0,
-#                 'card2': form.debts.card2.data or 0,
-#                 'card3': form.debts.card3.data or 0,
-#                 'card4': form.debts.card4.data or 0,
-#                 'card5': form.debts.card5.data or 0,
-#             },
-#             'loans': {
-#                 'vehicle1': form.loans.vehicle1.data or 0,
-#                 'vehicle2': form.loans.vehicle2.data or 0,
-#                 'vehicle3': form.loans.vehicle3.data or 0,
-#                 'boat1': form.loans.boat1.data or 0,
-#                 'boat2': form.loans.boat2.data or 0,
-#                 'boat3': form.loans.boat3.data or 0,
-#             },
-#             'groceries': form.groceries.data or 0,
-#             'transportation': form.transportation.data or 0,
-#         }
-#         # Save user_data to the session or pass it to the results page
-#         request.form = user_data
-#         return redirect(url_for('budget.results'))
-#     return render_template('budget/budget_input.html', form=form)
-
-
-
-# @budget_bp.route('/results', methods=['POST'])
-# def results():
-#     # Access user data from the request
-#     user_data = {
-#         'income': float(request.form.get('income', 0) or 0),
-#         'pay_period': request.form.get('pay_period', 'monthly'),
-#         'rent': float(request.form.get('rent', 0) or 0),
-#         'utilities': {
-#             'electricity': float(request.form.get('utilities-electricity', 0) or 0),
-#             'water': float(request.form.get('utilities-water', 0) or 0),
-#             'internet': float(request.form.get('utilities-internet', 0) or 0),
-#             'gas': float(request.form.get('utilities-gas', 0) or 0),
-#         },
-#         'debts': {
-#             'card1': float(request.form.get('debts-card1', 0) or 0),
-#             'card2': float(request.form.get('debts-card2', 0) or 0),
-#             'card3': float(request.form.get('debts-card3', 0) or 0),
-#             'card4': float(request.form.get('debts-card4', 0) or 0),
-#             'card5': float(request.form.get('debts-card5', 0) or 0),
-#         },
-#         'loans': {
-#             'vehicle1': float(request.form.get('loans-vehicle1', 0) or 0),
-#             'vehicle2': float(request.form.get('loans-vehicle2', 0) or 0),
-#             'vehicle3': float(request.form.get('loans-vehicle3', 0) or 0),
-#             'boat1': float(request.form.get('loans-boat1', 0) or 0),
-#             'boat2': float(request.form.get('loans-boat2', 0) or 0),
-#             'boat3': float(request.form.get('loans-boat3', 0) or 0),
-#         },
-#         'groceries': float(request.form.get('groceries', 0) or 0),
-#         'transportation': float(request.form.get('transportation', 0) or 0),
-#     }
-
-#     # Calculate the budget
-#     budget = calculate_budget(user_data)
-#     income_to_debt_ratio = budget['income_to_debt_ratio']
-
-#     if income_to_debt_ratio > 0.43:
-#         flash("Your debt to income ratio is considered high risk", 'danger')
-#     elif income_to_debt_ratio > 0.35:
-#         flash("Your debt to income ratio is considered concerning", 'warning')
-#     else:
-#         flash("Your debt to income ratio is healthy, keep up the good work", 'success')
-
-#     # Pass the cleaned data to calculate_budget
-#     budget = calculate_budget(user_data)
-
-#     # Render the results page
-#     return render_template('budget/budget_results.html', budget=budget)
-
-
-
-
-# @budget_bp.route('/download', methods=['POST'])
-# def download():
-#     from budget_sync.budget.budget_logic import create_excel  # Import here to avoid circular dependency
-#     budget_data = request.form.get('budget_data')
-#     response = create_excel(budget_data)
-#     return response
-
-

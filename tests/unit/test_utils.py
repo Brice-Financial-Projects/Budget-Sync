@@ -1,5 +1,5 @@
 """Unit tests for utility functions."""
-from src.budget_sync.utils import safe_str_cmp
+from budget_sync.utils import safe_str_cmp
 
 def test_safe_str_cmp_with_strings():
     """

@@ -2,9 +2,9 @@
 
 from flask import Blueprint, render_template, flash, redirect, url_for, request
 from flask_login import login_required, current_user
-from src.budget_sync import db
-from src.budget_sync.profile.forms import ProfileForm
-from src.budget_sync.models import Profile
+from budget_sync import db
+from budget_sync.profile.forms import ProfileForm
+from budget_sync.models import Profile
 
 profile_bp = Blueprint('profile', __name__)
 

@@ -1,6 +1,6 @@
 """backend/budget_sync/models.py"""
 
-from src.budget_sync import bcrypt, db
+from budget_sync import bcrypt, db
 from sqlalchemy.sql import func
 from datetime import datetime
 

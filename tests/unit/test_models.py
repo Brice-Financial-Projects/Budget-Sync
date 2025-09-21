@@ -1,6 +1,6 @@
 """Unit tests for database models."""
 from datetime import datetime, date
-from src.budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+from budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
 
 def test_new_user():
     """

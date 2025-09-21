@@ -1,7 +1,7 @@
 """Integration tests for database operations."""
 import pytest
-from src.budget_sync import db
-from src.budget_sync import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
+from budget_sync import db
+from budget_sync import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
 
 
 def test_user_profile_relationship(test_db):

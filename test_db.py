@@ -1,7 +1,7 @@
 # test_db.py
 import os
-from src.budget_sync import create_app
-from src.budget_sync import User  # Import the User model to test
+from budget_sync import create_app
+from budget_sync import User  # Import the User model to test
 
 # Print environment variables
 print(f"FLASK_ENV: {os.getenv('FLASK_ENV')}")

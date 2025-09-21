@@ -1,5 +1,5 @@
 """Test budget routes and functionality."""
-from src.budget_sync import Budget, BudgetItem, GrossIncome
+from budget_sync import Budget, BudgetItem, GrossIncome
 import time
 import random
 

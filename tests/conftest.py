@@ -1,7 +1,7 @@
 """Test configuration and fixtures."""
 import pytest
-from src.budget_sync import create_app, db
-from src.budget_sync import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
+from budget_sync import create_app, db
+from budget_sync import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
 from flask_login import login_user
 
 @pytest.fixture

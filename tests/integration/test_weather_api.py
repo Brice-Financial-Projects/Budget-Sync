@@ -1,7 +1,7 @@
 """Integration tests for weather API interactions."""
 import pytest
 from unittest.mock import patch, MagicMock
-from src.budget_sync.weather.weather_service import Weather
+from budget_sync.weather.weather_service import Weather
 
 @pytest.fixture
 def weather_service():

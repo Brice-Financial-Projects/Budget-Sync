@@ -36,7 +36,7 @@ from enum import Enum
 from typing import TypedDict, Dict, Any
 from decimal import Decimal, InvalidOperation, DivisionByZero
 from dataclasses import dataclass
-from src.budget_sync.models import Budget, GrossIncome, Profile
+from budget_sync.models import Budget, GrossIncome, Profile
 from flask import current_app
 
 logger = logging.getLogger(__name__)

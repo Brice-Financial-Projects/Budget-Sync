@@ -3,10 +3,10 @@
 from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy.exc import IntegrityError
-from src.budget_sync.auth import auth_bp
-from src.budget_sync.auth.forms import LoginForm, RegistrationForm
-from src.budget_sync.models import User
-from src.budget_sync import db, bcrypt
+from budget_sync.auth import auth_bp
+from budget_sync.auth.forms import LoginForm, RegistrationForm
+from budget_sync.models import User
+from budget_sync import db, bcrypt
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
