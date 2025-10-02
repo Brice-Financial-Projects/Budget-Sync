@@ -7,6 +7,8 @@ from wtforms.fields import SelectMultipleField
 from wtforms.widgets import ListWidget, CheckboxInput
 
 
+
+
 class UtilityField(FlaskForm):
     electricity = FloatField('Electricity', validators=[Optional()])
     water = FloatField('Water', validators=[Optional()])

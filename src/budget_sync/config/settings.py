@@ -27,6 +27,7 @@ class Config:
     DEBUG = os.getenv('FLASK_DEBUG')  # 1 = Development, 0 = Production
     SESSION_TYPE = os.getenv("SESSION_TYPE", "filesystem")  # Default to filesystem
     SESSION_PERMANENT = False
+    
 
 class DevelopmentConfig(Config):
     """Development-specific configuration."""
@@ -42,7 +43,7 @@ class DevelopmentConfig(Config):
         'flask_debugtoolbar.panels.route_list.RouteListDebugPanel',
         'flask_debugtoolbar.panels.profiler.ProfilerDebugPanel',
     ]
-    WTF_CSRF_ENABLED = False  # Disable CSRF for testing
+    WTF_CSRF_ENABLED = True  # Disable CSRF for testing
 
 
 class TestingConfig(Config):

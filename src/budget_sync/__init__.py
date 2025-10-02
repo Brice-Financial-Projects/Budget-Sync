@@ -12,6 +12,7 @@ from flask_login import LoginManager
 from flask_session import Session
 from flask_debugtoolbar import DebugToolbarExtension
 from redis import Redis
+from flask_wtf.csrf import CSRFProtect
 
 
 # Initializations
@@ -20,6 +21,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 bcrypt = Bcrypt()
 login_manager = LoginManager()
+csrf = CSRFProtect()
 
 
 def create_app():
@@ -52,6 +54,7 @@ def create_app():
     migrate.init_app(app, db)
     bcrypt.init_app(app)
     login_manager.init_app(app)
+    csrf.init_app(app)
     CORS(app)
 
     # Debug Toolbar initialization
