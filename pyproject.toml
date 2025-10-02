@@ -29,3 +29,8 @@ where = ["src"]
 [tool.setuptools.package-dir]
 "" = "src"
 
+[tool.ruff]
+exclude = [
+    "archives",  # ignore old shelved code
+    "migrations",  # common to exclude auto-generated alembic files
+]
