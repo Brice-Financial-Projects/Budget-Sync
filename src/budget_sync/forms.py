@@ -1,7 +1,7 @@
 """budget_sync/forms.py"""
 
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, SelectField, SubmitField, FormField, FieldList, DecimalField
+from wtforms import StringField, FloatField, SelectField, SubmitField, FormField, DecimalField
 from wtforms.validators import DataRequired, Optional, NumberRange
 from wtforms.fields import SelectMultipleField
 from wtforms.widgets import ListWidget, CheckboxInput

@@ -396,7 +396,7 @@ def delete_budget(budget_id):
         db.session.delete(budget)
         db.session.commit()
         flash("Budget deleted successfully!", "success")
-    except Exception as e:
+    except Exception:
         db.session.rollback()
         flash("An error occurred while deleting the budget. Please try again.", "danger")
 

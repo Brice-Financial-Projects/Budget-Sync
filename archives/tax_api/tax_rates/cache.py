@@ -1,10 +1,8 @@
 """Cache mechanism for tax rate API responses."""
 
-import json
 import time
 from typing import Any, Dict, Optional
 from dataclasses import asdict
-from datetime import datetime
 
 from .models import TaxBracket
 from .config import config

@@ -3,7 +3,6 @@
 # budget_sync/api/tax_rates/mock_client.py
 
 import logging
-from typing import Dict, Any, List
 
 from .models import (
     TaxBracket, 
@@ -13,10 +12,7 @@ from .models import (
     TaxCalculationRequest, 
     TaxCalculationResponse
 )
-from .data.federal_tax_data import get_federal_tax_brackets
-from .data.state_tax_data import get_state_tax_brackets
 
-from .data.fica_tax_data import get_fica_tax_brackets
 
 logger = logging.getLogger(__name__)
 

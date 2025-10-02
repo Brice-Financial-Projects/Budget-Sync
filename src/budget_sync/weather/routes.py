@@ -1,5 +1,5 @@
 """Weather routes."""
-from flask import Blueprint, render_template, request, flash
+from flask import Blueprint, render_template, flash
 from flask_login import login_required
 from ..weather.weather_service import Weather
 from ..weather.forms import WeatherForm

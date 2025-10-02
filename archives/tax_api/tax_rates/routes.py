@@ -2,7 +2,6 @@
 from flask import jsonify, request
 from . import tax_rates_bp
 from .models import (
-    TaxBracket, FederalTaxData, StateTaxData, FICATaxData,
     TaxCalculationRequest, TaxCalculationResponse
 )
 from .data import federal_tax_data, state_tax_data, fica_tax_data
@@ -11,7 +10,7 @@ from http import HTTPStatus
 
 # budget_sync/api/tax_rates/routes.py
 
-from flask import Blueprint, request, jsonify
+from flask import Blueprint
 from .data.federal_tax_data import (
     get_federal_tax_brackets,
     get_standard_deduction,

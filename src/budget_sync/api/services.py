@@ -2,10 +2,10 @@
 
 import logging
 import time
-from typing import Dict, Any, Optional, Callable, TypeVar, cast
+from typing import Dict, Any, Callable, TypeVar, cast
 from functools import wraps
 
-from .errors import APIError, RateLimitError, ServiceUnavailableError
+from .errors import RateLimitError, ServiceUnavailableError
 
 logger = logging.getLogger(__name__)
 
