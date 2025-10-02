@@ -171,7 +171,7 @@ def test_expense_template_creation():
     )
     assert template.name == 'Rent'
     assert template.description == 'Monthly rent payment'
-    assert template.is_default == False
+    assert not template.is_default
     assert template.priority == 1
     assert template.category_id == 1
 

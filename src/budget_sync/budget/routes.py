@@ -511,7 +511,7 @@ def select_expenses(budget_id):
 def review_expenses(budget_id):
     """Review and personalize selected expenses."""
     # Check if budget exists and belongs to the current user
-    budget = Budget.query.filter_by(id=budget_id, user_id=current_user.id).first_or_404()
+    Budget.query.filter_by(id=budget_id, user_id=current_user.id).first_or_404()
     
     # Get selected expense IDs from session
     selected_expense_ids = session.get('selected_expenses', [])
@@ -777,46 +777,46 @@ def download_budget(budget_id):
     # Get all budget items (expenses)
     budget_items = BudgetItem.query.filter_by(budget_id=budget.id).all()
     
-    try:
-        # Calculate tax withdrawals
-        tax_data = calculate_tax_withholdings(budget, income_sources, profile)
-        # see budget_sync.budget.budget_logic.py for current tax withholding logic.  Class BudgetCalculator - method calculate_tax_withholdings
-
+    # try:
+    #     # Calculate tax withdrawals
+    #     # tax_data = calculate_tax_withholdings(budget, income_sources, profile)
+    #     # see budget_sync.budget.budget_logic.py for current tax withholding logic.  Class BudgetCalculator - method calculate_tax_withholdings
+    #
+    #
+    #     # Calculate the final budget
+    #     calculator = BudgetCalculator(budget)
+    #     budget_result = calculator.calculate_final_budget(budget, income_sources, budget_items, tax_data, profile)
+    #
+    #     # Create Excel file
+    #     from datetime import datetime
+    #     budget_data = {
+    #         'budget_name': budget.name,
+    #         'created_date': datetime.now().strftime('%Y-%m-%d'),
+    #         'monthly_income': budget_result['monthly_gross_income'],
+    #         'net_income': budget_result['monthly_net_income'],
+    #         'total_expenses': budget_result['total_expenses'],
+    #         'remaining_money': budget_result['remaining_money'],
+    #         'details': {
+    #             'Income Sources': {source.source: source.gross_income for source in income_sources},
+    #             'Expenses': {f"{item.category} - {item.name}": (item.preferred_payment if item.preferred_payment > 0 else item.minimum_payment) for item in budget_items},
+    #             'Tax Withholdings': {
+    #                 'Federal Tax': tax_data['total_monthly_federal_tax'],
+    #                 'State Tax': tax_data['total_monthly_state_tax'],
+    #                 'FICA Tax': tax_data['total_monthly_fica_tax']
+    #             },
+    #             'Deductions': {
+    #                 'Retirement Contribution': profile.retirement_contribution,
+    #                 'Benefit Deductions': profile.benefit_deductions
+    #             }
+    #         }
+    #     }
+    #
+    #     # Generate the Excel file
+    #     return create_excel(budget_data)
         
-        # Calculate the final budget
-        calculator = BudgetCalculator(budget)
-        budget_result = calculator.calculate_final_budget(budget, income_sources, budget_items, tax_data, profile)
-        
-        # Create Excel file
-        from datetime import datetime
-        budget_data = {
-            'budget_name': budget.name,
-            'created_date': datetime.now().strftime('%Y-%m-%d'),
-            'monthly_income': budget_result['monthly_gross_income'],
-            'net_income': budget_result['monthly_net_income'],
-            'total_expenses': budget_result['total_expenses'],
-            'remaining_money': budget_result['remaining_money'],
-            'details': {
-                'Income Sources': {source.source: source.gross_income for source in income_sources},
-                'Expenses': {f"{item.category} - {item.name}": (item.preferred_payment if item.preferred_payment > 0 else item.minimum_payment) for item in budget_items},
-                'Tax Withholdings': {
-                    'Federal Tax': tax_data['total_monthly_federal_tax'],
-                    'State Tax': tax_data['total_monthly_state_tax'],
-                    'FICA Tax': tax_data['total_monthly_fica_tax']
-                },
-                'Deductions': {
-                    'Retirement Contribution': profile.retirement_contribution,
-                    'Benefit Deductions': profile.benefit_deductions
-                }
-            }
-        }
-        
-        # Generate the Excel file
-        return create_excel(budget_data)
-        
-    except Exception as e:
-        flash(f"An error occurred while generating the Excel file: {str(e)}", "danger")
-        return redirect(url_for('budget.calculate', budget_id=budget_id))
+    # except Exception as e:
+    #     flash(f"An error occurred while generating the Excel file: {str(e)}", "danger")
+    #     return redirect(url_for('budget.calculate', budget_id=budget_id))
 
 
 @budget_bp.errorhandler(Exception)

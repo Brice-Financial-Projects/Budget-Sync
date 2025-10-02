@@ -74,25 +74,6 @@ class BudgetCalculator:
             PaymentSchedule.WEEKLY.value: Decimal('52')
         }
 
-    def validate_budget(self, budget: Budget) -> None:
-        """
-        Validate the budget instance has required attributes and relationships.
-        
-        Args:
-            budget: Budget instance to validate
-            
-        Raises:
-            ValueError: If budget is invalid or missing required data
-        """
-        if not budget:
-            raise ValueError("Budget instance is required")
-            
-        if not budget.profile:
-            raise ValueError("Budget must have an associated profile")
-            
-        if not budget.gross_income_sources:
-            raise ValueError("Budget must have at least one income source")
-
     def calculate_gross_income(self) -> Dict[str, Any]:
         """Calculate total gross income from all sources."""
         try:
