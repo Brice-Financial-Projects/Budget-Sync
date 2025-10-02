@@ -98,7 +98,6 @@ jobs:
     name: Build & Push Docker (GHCR)
     runs-on: ubuntu-latest
     needs: lint-and-test
-    if: github.ref == 'refs/heads/main' && hashFiles('Dockerfile') != ''
 
     permissions:
       contents: read
@@ -133,6 +132,9 @@ jobs:
             ${{ steps.meta.outputs.image }}:latest
           build-args: |
             APP_KIND=flask
+      - name: Build Docker image
+        if: github.ref == 'refs/heads/main' && hashFiles('Dockerfile') != ''
+        run: docker build -t my-image .
 
   # Example deploy stub (fill in when ready)
   # deploy:
