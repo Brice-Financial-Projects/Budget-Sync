@@ -22,8 +22,8 @@ def test_register_user(client):
     response = client.post('/auth/register', data={
         'username': 'newuser',
         'email': 'new@example.com',
-        'password': 'password123',
-        'confirm_password': 'password123'
+        'password': 'Password@123456789',
+        'confirm_password': 'Password@123456789'
     }, follow_redirects=True)
     assert response.status_code == 200
     assert b'Account created successfully' in response.data
@@ -32,7 +32,7 @@ def test_login_user(client, test_user):
     """Test user login."""
     response = client.post('/auth/login', data={
         'email': 'test@example.com',
-        'password': 'testpass123'
+        'password': 'Password@123456789'
     }, follow_redirects=True)
     assert response.status_code == 200
     assert b'Welcome' in response.data
@@ -45,6 +45,6 @@ def test_logout(auth_client):
 
 def test_protected_route(client):
     """Test protected route redirects to login."""
-    response = client.get('/budget/create', follow_redirects=True)
+    response = client.get('/budget/preview', follow_redirects=True)
     assert response.status_code == 200
     assert b'Login' in response.data 

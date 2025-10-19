@@ -35,7 +35,7 @@ def test_user(app):
     user = User(
         username='testuser',
         email='test@example.com',
-        password='testpass123'
+        password='Password@123456789'
     )
     db.session.add(user)
     db.session.commit()
@@ -86,7 +86,7 @@ def auth_client(client, test_user, app):
     # Perform an actual login request
     client.post('/auth/login', data={
         'email': 'test@example.com',
-        'password': 'testpass123',
+        'password': 'Password@123456789',
         'remember_me': False
     })
     

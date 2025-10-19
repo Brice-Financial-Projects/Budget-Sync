@@ -15,6 +15,7 @@ from redis import Redis
 from flask_wtf.csrf import CSRFProtect
 
 
+
 # Initializations
 toolbar = DebugToolbarExtension()
 db = SQLAlchemy()
@@ -132,3 +133,28 @@ def configure_logging(app):
         app.logger.addHandler(file_handler)
 
     app.logger.info("App startup")
+
+
+# Re-export models at package level
+from budget_sync import models
+
+User = models.User
+Profile = models.Profile
+Budget = models.Budget
+ExpenseCategory = models.ExpenseCategory
+ExpenseTemplate = models.ExpenseTemplate
+BudgetItem = models.BudgetItem
+GrossIncome = models.GrossIncome
+
+__all__ = [
+    "create_app",
+    "db",
+    "bcrypt",
+    "User",
+    "Profile",
+    "Budget",
+    "ExpenseCategory",
+    "ExpenseTemplate",
+    "BudgetItem",
+    "GrossIncome",
+]
