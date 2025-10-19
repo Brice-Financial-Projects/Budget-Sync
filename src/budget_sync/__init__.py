@@ -13,6 +13,7 @@ from flask_session import Session
 from flask_debugtoolbar import DebugToolbarExtension
 from redis import Redis
 from flask_wtf.csrf import CSRFProtect
+from budget_sync import models
 
 
 
@@ -135,8 +136,8 @@ def configure_logging(app):
     app.logger.info("App startup")
 
 
-# Re-export models at package level
-from budget_sync import models
+
+
 
 User = models.User
 Profile = models.Profile
