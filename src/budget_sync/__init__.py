@@ -77,7 +77,7 @@ def create_app():
 
     # Import models (ensure all models are loaded for migrations)
     with app.app_context():
-        from budget_sync.models import Budget, User, Profile
+        from budget_sync.models import Budget, User, Profile  # noqa: F401
 
     # Register blueprints
     from budget_sync.budget.routes import budget_bp
