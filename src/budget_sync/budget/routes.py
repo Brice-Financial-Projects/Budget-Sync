@@ -462,7 +462,7 @@ def budget_name():
 def select_expenses(budget_id):
     """Let users select expenses from predefined templates."""
     # Check if budget exists and belongs to the current user
-    budget = Budget.query.filter_by(id=budget_id, user_id=current_user.id).first_or_404()
+    _budget = Budget.query.filter_by(id=budget_id, user_id=current_user.id).first_or_404()
     
     # Simple form for CSRF protection
     class ExpenseForm(FlaskForm):
@@ -769,13 +769,13 @@ def download_budget(budget_id):
         return redirect(url_for('main.dashboard'))
     
     # Get the user's profile
-    profile = Profile.query.filter_by(user_id=current_user.id).first()
+    _profile = Profile.query.filter_by(user_id=current_user.id).first()
     
     # Get all income sources
-    income_sources = GrossIncome.query.filter_by(budget_id=budget.id).all()
+    _income_sources = GrossIncome.query.filter_by(budget_id=budget.id).all()
     
     # Get all budget items (expenses)
-    budget_items = BudgetItem.query.filter_by(budget_id=budget.id).all()
+    _budget_items = BudgetItem.query.filter_by(budget_id=budget.id).all()
     
     # try:
     #     # Calculate tax withdrawals
