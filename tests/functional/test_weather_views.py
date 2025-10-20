@@ -11,7 +11,7 @@ def test_weather_page(auth_client):
     assert response.status_code == 200
     assert b'Weather' in response.data
 
-@patch('budget_sync.weather.weather_service.Weather')
+@patch('budget_sync.weather.routes.Weather')
 def test_weather_search_success(mock_weather, auth_client):
     """Test successful weather search."""
     # Mock the weather service
@@ -27,6 +27,7 @@ def test_weather_search_success(mock_weather, auth_client):
         'weather': [{'description': 'clear sky'}],
         'wind': {'speed': 5}
     }
+    mock_instance.get_radar_map.return_value = None
     mock_weather.return_value = mock_instance
 
     response = auth_client.post('/weather/weather', data={
@@ -38,7 +39,7 @@ def test_weather_search_success(mock_weather, auth_client):
     assert response.status_code == 200
     assert b'San Francisco' in response.data or b'san francisco' in response.data
 
-@patch('budget_sync.weather.weather_service.Weather')
+@patch('budget_sync.weather.routes.Weather')
 def test_weather_search_error(mock_weather, auth_client):
     """Test weather search with invalid location."""
     # Mock the weather service to return None for location
