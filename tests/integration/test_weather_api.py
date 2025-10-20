@@ -10,7 +10,8 @@ from budget_sync.weather.weather_service import Weather
 @pytest.fixture
 def weather_service():
     """Create a weather service instance for testing."""
-    return Weather()
+    return Weather(city_name_param="Orlando", state_code_param="FL", country_code="US")
+
 
 def test_get_weather_for_location(weather_service):
     """

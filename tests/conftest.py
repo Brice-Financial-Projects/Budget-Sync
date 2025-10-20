@@ -161,4 +161,22 @@ def test_db(app):
         db.create_all()
         yield db
         db.session.remove()
-        db.drop_all() 
+        db.drop_all()
+
+@pytest.fixture
+def logged_in_client(client):
+    """
+    Creates a test user and logs them in so routes
+    protected by @login_required return 200 instead of 302.
+    """
+    # Create test user
+    user = User(username="testuser", email="test@example.com")
+    user.set_password("testpassword")  # assumes your model has this helper
+    db.session.add(user)
+    db.session.commit()
+
+    # Simulate login by storing user ID in session
+    with client.session_transaction() as sess:
+        sess["user_id"] = user.id
+
+    return client

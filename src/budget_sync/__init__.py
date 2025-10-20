@@ -13,7 +13,6 @@ from flask_session import Session
 from flask_debugtoolbar import DebugToolbarExtension
 from redis import Redis
 from flask_wtf.csrf import CSRFProtect
-from budget_sync import models
 
 
 
@@ -137,25 +136,26 @@ def configure_logging(app):
 
 
 
+# --------------------------------------------------------------------
+# Re-export models at package level **after** the package is initialized.
+# --------------------------------------------------------------------
+def __getattr__(name):
+    # Import models only when we need to access model classes
+    if name in ['User', 'Profile', 'Budget', 'ExpenseCategory', 'ExpenseTemplate', 'BudgetItem', 'GrossIncome',
+                'OtherIncome']:
+        from budget_sync.models import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem, GrossIncome, \
+            OtherIncome
+        models_dict = {
+            'User': User,
+            'Profile': Profile,
+            'Budget': Budget,
+            'ExpenseCategory': ExpenseCategory,
+            'ExpenseTemplate': ExpenseTemplate,
+            'BudgetItem': BudgetItem,
+            'GrossIncome': GrossIncome,
+            'OtherIncome': OtherIncome
+        }
+        if name in models_dict:
+            return models_dict[name]
 
-
-User = models.User
-Profile = models.Profile
-Budget = models.Budget
-ExpenseCategory = models.ExpenseCategory
-ExpenseTemplate = models.ExpenseTemplate
-BudgetItem = models.BudgetItem
-GrossIncome = models.GrossIncome
-
-__all__ = [
-    "create_app",
-    "db",
-    "bcrypt",
-    "User",
-    "Profile",
-    "Budget",
-    "ExpenseCategory",
-    "ExpenseTemplate",
-    "BudgetItem",
-    "GrossIncome",
-]
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
