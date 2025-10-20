@@ -38,6 +38,19 @@ jobs:
           --health-timeout 3s
           --health-retries 20
 
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports: [ "5432:5432" ]
+        options: >-
+          --health-cmd "pg_isready -U testuser -d testdb"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -83,9 +96,9 @@ jobs:
 
       - name: Run tests
         env:
-          # If your tests read these from os.environ they'll be present
-          DATABASE_URL: "sqlite:///./test.db"
+          DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
         run: |
+          echo "Using Postgres test database"
           pytest -q --cov=app --cov=src --cov-report=xml --maxfail=1
 
       - name: Upload coverage to Actions
@@ -132,6 +145,7 @@ jobs:
             ${{ steps.meta.outputs.image }}:latest
           build-args: |
             APP_KIND=flask
+
       - name: Build Docker image
         if: github.ref == 'refs/heads/main' && hashFiles('Dockerfile') != ''
         run: docker build -t my-image .
