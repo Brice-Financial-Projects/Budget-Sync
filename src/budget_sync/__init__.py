@@ -49,7 +49,16 @@ def create_app():
         
     # Check if CSRF is enabled
     print(f"🔧 CSRF Protection enabled: {app.config.get('WTF_CSRF_ENABLED', False)}")
-    
+
+    # Ensure Flask-SQLAlchemy sees the Postgres URL
+    database_uri = os.getenv("DATABASE_URL")
+
+    if not database_uri:
+        raise RuntimeError("DATABASE_URL environment variable not set")
+
+    app.config["SQLALCHEMY_DATABASE_URI"] = database_uri
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
     # Initialize extensions
     db.init_app(app)
     migrate.init_app(app, db)
