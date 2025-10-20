@@ -20,7 +20,7 @@ env:
   REDIS_URL: redis://localhost:6379/0
   # Dummies so code that expects these won't crash in CI (don't send real emails!)
   SENDGRID_API_KEY: "ci-dummy"
-  WEATHER_API_KEY: "ci-dummy"
+  OPENWEATHER_API_KEY: "ci-dummy"
   FLASK_SECRET_KEY: "ci-secret"
 
 jobs:
