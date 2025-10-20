@@ -62,6 +62,7 @@ def test_api_error_handling(weather_service):
         # Mock API error response
         error_response = MagicMock()
         error_response.status_code = 404
+        error_response.raise_for_status.side_effect = Exception("API Error")
         mock_get.return_value = error_response
 
         # Test error handling
@@ -75,8 +76,9 @@ def test_api_timeout_handling(weather_service):
     THEN check that the timeout is handled gracefully
     """
     with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
-        # Mock timeout exception
-        mock_get.side_effect = TimeoutError()
+        # Mock timeout exception from requests library
+        import requests
+        mock_get.side_effect = requests.exceptions.Timeout()
 
         # Test timeout handling
         result = weather_service.get_weather_for_location('New York', 'NY', 'US')

@@ -83,6 +83,10 @@ def test_expense_review_personalization(auth_client, test_budget, test_expense_t
     # Setup: Ensure budget exists and has selected expenses
     budget_id = test_budget.id
 
+    # Add selected expenses to session (required for review page to work)
+    with auth_client.session_transaction() as sess:
+        sess['selected_expenses'] = [test_expense_template.id]
+
     # Test: Go to expense review page
     response = auth_client.get(f'/budget/review_expenses/{budget_id}')
     assert response.status_code == 200

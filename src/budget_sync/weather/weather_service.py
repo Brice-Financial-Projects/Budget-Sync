@@ -51,7 +51,7 @@ class Weather:
             else:
                 print("No location data found.")
                 return None
-        except requests.RequestException as e:
+        except (requests.RequestException, Exception) as e:
             print(f"Error fetching latitude and longitude data: {e}")
             return None
 
@@ -118,4 +118,31 @@ class Weather:
         except ValueError as val_err:
             print(f"Value error occurred while fetching radar map: {val_err}")
 
-        return None 
+        return None
+
+    def get_weather_for_location(self, city, state, country):
+        """
+        Get weather data for a specified location.
+
+        Args:
+            city (str): City name
+            state (str): State code (e.g., 'NY', 'CA')
+            country (str): Country code (e.g., 'US', 'GB')
+
+        Returns:
+            dict: Weather data if successful, None otherwise
+        """
+        # Update instance attributes
+        self.city_name = city
+        self.state_code = state
+        self.country_code = country
+
+        # Get coordinates
+        lat_lon = self.get_lat_lon()
+        if not lat_lon:
+            return None
+
+        lat, lon = lat_lon
+
+        # Get weather data
+        return self.get_weather(lat, lon) 

@@ -7,6 +7,9 @@
 {% block content %}
 <div class="container mt-4">
     <h1>Profile Information</h1>
+    {% if profile and profile.first_name and profile.last_name %}
+    <p class="lead">{{ profile.first_name }} {{ profile.last_name }}</p>
+    {% endif %}
     <form method="POST" class="needs-validation" novalidate>
         {{ form.hidden_tag() }}
         

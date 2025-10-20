@@ -90,6 +90,8 @@ def profile_view():
             form.fsa_contribution.data = user_profile.fsa_contribution
             form.other_pretax_benefits.data = user_profile.other_pretax_benefits
 
-    return render_template('profile/profile.html', form=form)
+    # Get profile for display purposes
+    user_profile = Profile.query.filter_by(user_id=current_user.id).first()
+    return render_template('profile/profile.html', form=form, profile=user_profile)
 
 
