@@ -1,0 +1,32 @@
+<!--budget_sync/templates/budget/name.html-->
+
+{% extends 'base.html' %}
+
+{% block title %}Enter Budget Name{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Create a New Budget</h2>
+
+    <div class="mb-3">
+        <h4>Your Existing Budgets:</h4>
+        <ul class="list-group">
+            {% for budget in existing_budgets %}
+                <li class="list-group-item">{{ budget.name }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <form method="POST" action="{{ url_for('budget.budget_name') }}">
+        {{ form.hidden_tag() }}
+
+        <div class="mb-3">
+            {{ form.budget_name.label(class="form-label") }}
+            {{ form.budget_name(class="form-control") }}
+        </div>
+
+        <button type="submit" class="btn btn-primary w-100">Next: Enter Budget Details</button>
+    </form>
+</div>
+{% endblock %}
+

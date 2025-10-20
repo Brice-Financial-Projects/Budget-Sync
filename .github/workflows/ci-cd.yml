@@ -1,0 +1,160 @@
+name: CI / CD
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PYTHON_VERSION: "3.12"
+  # Test-time env; override via GitHub Secrets in real deployments
+  FLASK_ENV: testing
+  CI: "true"
+  # Local Redis used by tests; budget_sync should read REDIS_URL
+  REDIS_URL: redis://localhost:6379/0
+  # Dummies so code that expects these won't crash in CI (don't send real emails!)
+  SENDGRID_API_KEY: "ci-dummy"
+  OPENWEATHER_API_KEY: "ci-dummy"
+  FLASK_SECRET_KEY: "ci-secret"
+
+jobs:
+  lint-and-test:
+    name: Lint & Pytest
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: [ "6379:6379" ]
+        options: >-
+          --health-cmd "redis-cli ping || exit 1"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+
+      postgres:
+        image: postgres:15-alpine
+        env:
+          POSTGRES_USER: testuser
+          POSTGRES_PASSWORD: testpass
+          POSTGRES_DB: testdb
+        ports: [ "5432:5432" ]
+        options: >-
+          --health-cmd "pg_isready -U testuser -d testdb"
+          --health-interval 5s
+          --health-timeout 3s
+          --health-retries 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+          cache: pip
+          cache-dependency-path: |
+            requirements.txt
+            requirements-dev.txt
+            pyproject.toml
+            poetry.lock
+
+      - name: Install dependencies
+        run: |
+          python -m pip install -U pip wheel
+          if [ -f requirements-dev.txt ]; then
+            pip install -r requirements-dev.txt
+          fi
+          if [ -f requirements.txt ]; then
+            pip install -r requirements.txt
+          fi
+          # Safety net if dev reqs aren't defined
+          python - <<'PY'
+          import importlib, sys
+          need = []
+          for pkg in ("pytest","pytest-cov","ruff"):
+              try: importlib.import_module(pkg.replace("-","_"))
+              except ImportError: need.append(pkg)
+          if need:
+              import subprocess; subprocess.check_call([sys.executable,"-m","pip","install",*need])
+          PY
+
+      - name: Ruff (lint)
+        run: ruff check .
+
+      - name: Show pytest.ini (debug)
+        if: always()
+        run: |
+          [ -f pytest.ini ] && cat pytest.ini || echo "pytest.ini not found"
+
+      - name: Run tests
+        env:
+          DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
+        run: |
+          echo "Using Postgres test database"
+          pytest -q --cov=app --cov=src --cov-report=xml --maxfail=1
+
+      - name: Upload coverage to Actions
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+#  docker-build-push:
+#    name: Build & Push Docker (GHCR)
+#    runs-on: ubuntu-latest
+#    needs: lint-and-test
+#
+#    permissions:
+#      contents: read
+#      packages: write
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v4
+#
+#      - name: Log in to GHCR
+#        uses: docker/login-action@v3
+#        with:
+#          registry: ghcr.io
+#          username: ${{ github.actor }}
+#          password: ${{ secrets.GITHUB_TOKEN }}
+#
+#      - name: Set image meta
+#        id: meta
+#        run: |
+#          OWNER_LOWER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+#          REPO_NAME=$(echo "${{ github.repository }}" | cut -d/ -f2 | tr '[:upper:]' '[:lower:]')
+#          echo "image=ghcr.io/${OWNER_LOWER}/${REPO_NAME}" >> "$GITHUB_OUTPUT"
+#          echo "tag=${GITHUB_SHA::7}" >> "$GITHUB_OUTPUT"
+#
+#      - name: Build & push
+#        uses: docker/build-push-action@v6
+#        with:
+#          context: .
+#          push: true
+#          tags: |
+#            ${{ steps.meta.outputs.image }}:${{ steps.meta.outputs.tag }}
+#            ${{ steps.meta.outputs.image }}:latest
+#          build-args: |
+#            APP_KIND=flask
+#
+#      - name: Build Docker image
+#        if: github.ref == 'refs/heads/main' && hashFiles('Dockerfile') != ''
+#        run: docker build -t my-image .
+
+  # Example deploy stub (fill in when ready)
+  # deploy:
+  #   name: Deploy (manual)
+  #   needs: docker-build-push
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'workflow_dispatch'
+  #   steps:
+  #     - run: echo "Deploy your container from GHCR here (App Runner/EB/K8s)."

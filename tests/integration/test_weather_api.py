@@ -1,12 +1,17 @@
 """Integration tests for weather API interactions."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
 from unittest.mock import patch, MagicMock
-from app.weather.weather_service import Weather
+from budget_sync.weather.weather_service import Weather
 
 @pytest.fixture
 def weather_service():
     """Create a weather service instance for testing."""
-    return Weather()
+    return Weather(city_name_param="Orlando", state_code_param="FL", country_code="US")
+
 
 def test_get_weather_for_location(weather_service):
     """
@@ -14,7 +19,7 @@ def test_get_weather_for_location(weather_service):
     WHEN requesting weather data for a valid location
     THEN check that the API calls are made correctly and data is returned
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
         # Mock the geocoding API response
         geo_response = MagicMock()
         geo_response.status_code = 200
@@ -53,10 +58,11 @@ def test_api_error_handling(weather_service):
     WHEN the API returns an error
     THEN check that errors are handled gracefully
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
         # Mock API error response
         error_response = MagicMock()
         error_response.status_code = 404
+        error_response.raise_for_status.side_effect = Exception("API Error")
         mock_get.return_value = error_response
 
         # Test error handling
@@ -69,9 +75,10 @@ def test_api_timeout_handling(weather_service):
     WHEN the API request times out
     THEN check that the timeout is handled gracefully
     """
-    with patch('app.weather.weather_service.requests.get') as mock_get:
-        # Mock timeout exception
-        mock_get.side_effect = TimeoutError()
+    with patch('budget_sync.weather.weather_service.requests.get') as mock_get:
+        # Mock timeout exception from requests library
+        import requests
+        mock_get.side_effect = requests.exceptions.Timeout()
 
         # Test timeout handling
         result = weather_service.get_weather_for_location('New York', 'NY', 'US')

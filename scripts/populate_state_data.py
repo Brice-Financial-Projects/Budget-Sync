@@ -1,8 +1,7 @@
 # scripts/populate_state_data.py
 
-from app import create_app, db
-from app.api.tax_rates.models import StateInfo, StateTaxBracket
-from datetime import datetime
+from budget_sync import create_app, db
+from budget_sync import StateInfo, StateTaxBracket
 
 
 def populate_state_info():
@@ -26,7 +25,7 @@ def populate_state_info():
     no_tax_states = ['AK', 'FL', 'NV', 'NH', 'SD', 'TN', 'TX', 'WA', 'WY']
 
     # Flat tax states and their rates for 2023
-    flat_tax_states = {
+    _flat_tax_states = {
         'CO': 0.0444,
         'IL': 0.0499,
         'IN': 0.0315,

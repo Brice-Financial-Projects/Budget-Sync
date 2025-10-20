@@ -5,7 +5,7 @@
 
 #### 1.1 Heroku PostgreSQL Provisioning
 ```bash
-# Add PostgreSQL to your Heroku app
+# Add PostgreSQL to your Heroku budget_sync
 heroku addons:create heroku-postgresql:hobby-dev
 
 # For production, consider using a higher tier
@@ -115,7 +115,7 @@ heroku addons:create heroku-postgresql:metrics-basic
 Available on Standard-0 and above plans:
 ```bash
 # Restore to a specific timestamp
-heroku pg:backups:restore --app=myapp '2023-12-01 12:00:00 UTC'
+heroku pg:backups:restore --budget_sync=myapp '2023-12-01 12:00:00 UTC'
 ```
 
 #### 5.2 Follower Databases

@@ -1,0 +1,68 @@
+<!-- backend/budget_sync/templates/budget/budget_create.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Create Budget{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4 text-center">Build Your Budget: <strong>{{ budget_name }}</strong></h2>
+
+    <form method="POST" action="{{ url_for('budget.create_budget') }}" class="p-4">
+        {{ form.hidden_tag() }}
+        
+        <!-- Budget Name Display (Read-Only) -->
+        <div class="mb-4">
+            <label class="form-label">Budget Name</label>
+            <input type="text" class="form-control" value="{{ budget_name }}" disabled>
+        </div>
+        
+        <!-- Categories Section -->
+        <div id="categories" class="mb-4">
+            {% if session.get('categories') %}
+                <!-- Load Existing Categories from Session -->
+                {% for category, subcategories in session['categories'].items() %}
+                    <div class="card p-3 mb-4" data-index="{{ loop.index0 }}" style="background-color: #e0f7fa;">
+                        <h4 class="mb-3">Category</h4>
+                        <div class="mb-3">
+                            <input type="text" class="form-control" name="category_name[]" value="{{ category }}" placeholder="Category Name (e.g., Bills, Food)">
+                        </div>
+                        <div class="subcategories">
+                            <h5 class="mb-3">Subcategories</h5>
+                            {% for sub in subcategories %}
+                                <div class="mb-2">
+                                    <input type="text" class="form-control" name="subcategory_{{ loop.index0 }}[]" value="{{ sub }}" placeholder="Subcategory Name (e.g., Water, Groceries)">
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <button type="button" class="btn btn-sm btn-success add-subcategory">Add Subcategory</button>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Default Empty Category for New Budgets -->
+                <div class="card p-3 mb-4" data-index="0" style="background-color: #e0f7fa;">
+                    <h4 class="mb-3">Category</h4>
+                    <div class="mb-3">
+                        <input type="text" class="form-control" name="category_name[]" placeholder="Category Name (e.g., Bills, Food)">
+                    </div>
+                    <div class="subcategories">
+                        <h5 class="mb-3">Subcategories</h5>
+                        <div class="mb-2">
+                            <input type="text" class="form-control" name="subcategory_0[]" placeholder="Subcategory Name (e.g., Water, Groceries)">
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-success add-subcategory">Add Subcategory</button>
+                </div>
+            {% endif %}
+        </div>
+
+        <button type="button" id="add-category" class="btn btn-secondary mb-4">Add Another Category</button>
+        <button type="submit" class="btn btn-primary">Next: Select Categories</button>
+    </form>
+</div>
+
+<!--JavaScript Insertion-->
+<script src="{{ url_for('static', filename='js/budget_create.js') }}"></script>
+
+{% endblock %}
+

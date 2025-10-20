@@ -1,8 +1,13 @@
 """Test configuration and fixtures."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
-from app import create_app, db
-from app.models import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
-from flask_login import current_user, login_user
+from budget_sync import create_app, db
+from budget_sync import User, Profile, Budget, ExpenseCategory, ExpenseTemplate, BudgetItem
+from flask_login import login_user
+
 
 @pytest.fixture
 def app():
@@ -10,7 +15,8 @@ def app():
     app = create_app()
     app.config['TESTING'] = True
     app.config['WTF_CSRF_ENABLED'] = False
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///:memory:'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv(
+        'TEST_DATABASE_URL')
     app.config['LOGIN_DISABLED'] = False  # Ensure login is required
     
     with app.app_context():
@@ -30,7 +36,7 @@ def test_user(app):
     user = User(
         username='testuser',
         email='test@example.com',
-        password='testpass123'
+        password='Password@123456789'
     )
     db.session.add(user)
     db.session.commit()
@@ -81,7 +87,7 @@ def auth_client(client, test_user, app):
     # Perform an actual login request
     client.post('/auth/login', data={
         'email': 'test@example.com',
-        'password': 'testpass123',
+        'password': 'Password@123456789',
         'remember_me': False
     })
     
@@ -156,4 +162,22 @@ def test_db(app):
         db.create_all()
         yield db
         db.session.remove()
-        db.drop_all() 
+        db.drop_all()
+
+@pytest.fixture
+def logged_in_client(client):
+    """
+    Creates a test user and logs them in so routes
+    protected by @login_required return 200 instead of 302.
+    """
+    # Create test user
+    user = User(username="testuser", email="test@example.com")
+    user.set_password("testpassword")  # assumes your model has this helper
+    db.session.add(user)
+    db.session.commit()
+
+    # Simulate login by storing user ID in session
+    with client.session_transaction() as sess:
+        sess["user_id"] = user.id
+
+    return client

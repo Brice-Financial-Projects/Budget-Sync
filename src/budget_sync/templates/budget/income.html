@@ -1,0 +1,111 @@
+<!--budget_sync/templates/budget/income.html-->
+
+{% extends 'base.html' %}
+
+{% block title %}Income Details{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h2 class="text-center mb-4">Enter Income Information</h2>
+
+    <form method="POST" action="{{ url_for('budget.income') }}">
+        <!-- Only include the CSRF token once at the form level -->
+        {{ form.hidden_tag() }}
+
+        <!-- Primary Income Section -->
+        <div class="card mb-4">
+            <div class="card-header">
+                <h5 class="mb-0">Primary Income (W2 Job)</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    {{ form.gross_income.label(class="form-label") }}
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        {{ form.gross_income(class="form-control", placeholder="Enter your annual gross income") }}
+                    </div>
+                    <div class="form-text">Enter your total annual gross income before taxes and deductions</div>
+                </div>
+                <div class="mb-3">
+                    {{ form.gross_income_frequency.label(class="form-label") }}
+                    {{ form.gross_income_frequency(class="form-select") }}
+                    <div class="form-text">Select how often you receive this income</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Income Sources Section -->
+        <div class="card mb-4">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Additional Income Sources</h5>
+                <button type="button" class="btn btn-primary" id="add-income">Add Income Source</button>
+            </div>
+            <div class="card-body">
+                <div id="other-income-container">
+                    {% if other_income %}
+                        {% for entry in other_income %}
+                        <div class="income-entry mb-3">
+                            <!-- Do not include individual CSRF tokens for each entry -->
+                            <div class="mb-3">
+                                <label class="form-label">Income Type</label>
+                                <select class="form-select" name="other_income_sources-{{ loop.index0 }}-category">
+                                    <option value="">Select Income Type</option>
+                                    <option value="rental"{% if entry.category == 'rental' %} selected{% endif %}>Rental Income</option>
+                                    <option value="investment"{% if entry.category == 'investment' %} selected{% endif %}>Investment Dividends</option>
+                                    <option value="business"{% if entry.category == 'business' %} selected{% endif %}>Business Income</option>
+                                    <option value="side_job"{% if entry.category == 'side_job' %} selected{% endif %}>Secondary Employment</option>
+                                    <option value="royalties"{% if entry.category == 'royalties' %} selected{% endif %}>Royalties</option>
+                                    <option value="social_security"{% if entry.category == 'social_security' %} selected{% endif %}>Social Security</option>
+                                    <option value="pension"{% if entry.category == 'pension' %} selected{% endif %}>Pension</option>
+                                    <option value="other"{% if entry.category == 'other' %} selected{% endif %}>Other</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Income Source Name</label>
+                                <input type="text" class="form-control" name="other_income_sources-{{ loop.index0 }}-name" value="{{ entry.name or '' }}">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Amount</label>
+                                <input type="number" class="form-control" name="other_income_sources-{{ loop.index0 }}-amount" value="{{ entry.amount or '' }}" step="0.01" min="0">
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="form-label">Frequency</label>
+                                <select class="form-select" name="other_income_sources-{{ loop.index0 }}-frequency">
+                                    <option value="">Select Frequency</option>
+                                    <option value="weekly"{% if entry.frequency == 'weekly' %} selected{% endif %}>Weekly</option>
+                                    <option value="biweekly"{% if entry.frequency == 'biweekly' %} selected{% endif %}>Biweekly</option>
+                                    <option value="monthly"{% if entry.frequency == 'monthly' %} selected{% endif %}>Monthly</option>
+                                    <option value="bimonthly"{% if entry.frequency == 'bimonthly' %} selected{% endif %}>Bimonthly</option>
+                                    <option value="annually"{% if entry.frequency == 'annually' %} selected{% endif %}>Annually</option>
+                                </select>
+                            </div>
+
+                            <button type="button" class="btn btn-danger remove-income">Remove</button>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="alert alert-info">
+                            No additional income sources added yet. Click "Add Income Source" to add one.
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="d-grid gap-2">
+            {{ form.csrf_token }}
+            <button type="submit" name="save" class="btn btn-primary">Save Income Details</button>
+        </div>
+    </form>
+</div>
+
+<!-- Load External JavaScript -->
+<script src="{{ url_for('static', filename='js/income.js') }}"></script>
+
+{% endblock %}
+
+

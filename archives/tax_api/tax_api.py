@@ -1,14 +1,14 @@
 """Interface for tax rate calculations in the budget module."""
 
 import logging
-from typing import Dict, Any, List, Optional, Tuple
+from typing import Dict, Any, List, Optional
 from datetime import datetime
 
-from app.api.tax_rates.client import client as tax_client
-from app.api.tax_rates.models import TaxCalculationRequest, TaxCalculationResponse
-from app.api.errors import APIError, handle_api_error
-from app.api.services import retry_on_failure, memoize_with_expiry
-from app.models import Budget, GrossIncome, Profile
+from src.budget_sync import client as tax_client
+from src.budget_sync import TaxCalculationRequest, TaxCalculationResponse
+from src.budget_sync.api.errors import APIError, handle_api_error
+from src.budget_sync.api.services import retry_on_failure, memoize_with_expiry
+from src.budget_sync import Budget, GrossIncome, Profile
 
 logger = logging.getLogger(__name__)
 

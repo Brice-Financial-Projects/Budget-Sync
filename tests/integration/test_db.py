@@ -1,8 +1,12 @@
 """Integration tests for database operations."""
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 import pytest
-from app import db
-from app.models import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
-from datetime import date
+from budget_sync import db
+from budget_sync import User, Profile, Budget, BudgetItem, ExpenseCategory, ExpenseTemplate
+
 
 def test_user_profile_relationship(test_db):
     """

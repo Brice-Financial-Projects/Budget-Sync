@@ -1,6 +1,6 @@
-"""backend/app/auth/models.py"""
+"""backend/budget_sync/auth/models.py"""
 
-# from app import db, bcrypt
+# from budget_sync import db, bcrypt
 # from sqlalchemy.sql import func
 
 # class User(db.Model):

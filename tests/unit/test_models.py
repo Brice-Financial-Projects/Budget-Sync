@@ -1,7 +1,11 @@
 """Unit tests for database models."""
-import pytest
+
+import sys
+import os
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
 from datetime import datetime, date
-from app.models import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+from budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+
 
 def test_new_user():
     """
@@ -167,7 +171,7 @@ def test_expense_template_creation():
     )
     assert template.name == 'Rent'
     assert template.description == 'Monthly rent payment'
-    assert template.is_default == False
+    assert not template.is_default
     assert template.priority == 1
     assert template.category_id == 1
 
