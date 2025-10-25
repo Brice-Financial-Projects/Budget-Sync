@@ -2,7 +2,8 @@
 
 from budget_sync import bcrypt, db
 from sqlalchemy.sql import func
-from datetime import datetime
+from datetime import datetime, timedelta
+import secrets
 
 
 # -------------------- User Model --------------------
@@ -19,6 +20,7 @@ class User(db.Model):
     # Relationships
     profile = db.relationship("Profile", back_populates="user", uselist=False)
     budgets = db.relationship("Budget", back_populates="user", cascade="all, delete-orphan")
+    password_reset_tokens = db.relationship("PasswordResetToken", back_populates="user", cascade="all, delete-orphan")
 
     def __init__(self, username, email, password):
         self.username = username
@@ -47,6 +49,33 @@ class User(db.Model):
 
     def __repr__(self):
         return f"<User {self.username}, {self.email}>"
+
+
+# -------------------- Password Reset Token Model --------------------
+class PasswordResetToken(db.Model):
+    __tablename__ = "password_reset_tokens"
+
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    token = db.Column(db.String(100), unique=True, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=func.now(), nullable=False)
+    expires_at = db.Column(db.DateTime, nullable=False)
+    used = db.Column(db.Boolean, default=False)
+
+    # Relationships
+    user = db.relationship("User", back_populates="password_reset_tokens")
+
+    def __init__(self, user_id, expiration_hours=1):
+        self.user_id = user_id
+        self.token = secrets.token_urlsafe(32)
+        self.expires_at = datetime.utcnow() + timedelta(hours=expiration_hours)
+
+    def is_expired(self):
+        return datetime.utcnow() > self.expires_at
+
+    def __repr__(self):
+        return f"<PasswordResetToken {self.token[:8]}... for user {self.user_id}>"
+
 
 # -------------------- Profile Model --------------------
 class Profile(db.Model):
