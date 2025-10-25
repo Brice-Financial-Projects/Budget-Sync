@@ -12,7 +12,6 @@
             <th>Category</th>
             <th>Subcategory</th>
             <th>Minimum Payment</th>
-            <th>Preferred Payment</th>
         </tr>
     </thead>
     <tbody>
@@ -22,7 +21,6 @@
                     <td>{{ category }}</td>
                     <td>{{ subcategory }}</td>
                     <td>{{ details['min_payment'] }}</td>
-                    <td>{{ details['pref_payment'] }}</td>
                 </tr>
             {% endfor %}
         {% endfor %}
@@ -33,9 +31,7 @@
 <ul>
     <li>Monthly Income: {{ summary.monthly_income }}</li>
     <li>Total Expenses (Min): {{ summary.total_expenses_min }}</li>
-    <li>Total Expenses (Pref): {{ summary.total_expenses_pref }}</li>
     <li>Remaining Money (Min): {{ summary.remaining_min }}</li>
-    <li>Remaining Money (Pref): {{ summary.remaining_pref }}</li>
     <li>Income-to-Debt Ratio: {{ summary.income_to_debt_ratio }}</li>
 </ul>
 {% endblock %}

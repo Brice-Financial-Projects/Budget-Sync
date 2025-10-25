@@ -98,7 +98,6 @@
                                         <tr>
                                             <th>Item</th>
                                             <th>Minimum Payment</th>
-                                            <th>Preferred Payment</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -106,7 +105,6 @@
                                         <tr>
                                             <td>{{ item.name }}</td>
                                             <td>${{ item.minimum_payment | round(2) }}</td>
-                                            <td>${{ item.preferred_payment | round(2) }}</td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>

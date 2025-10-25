@@ -8,7 +8,7 @@
   
   <div class="card mb-4">
     <div class="card-body">
-      <p class="mb-4">Enter the payment amounts for each of your expenses. The minimum payment is required, while the preferred payment is optional.</p>
+      <p class="mb-4">Enter the minimum payment amounts for each of your expenses.</p>
       
       <form method="POST" action="{{ url_for('budget.set_payment_amounts', budget_id=budget.id) }}">
         {{ form.hidden_tag() }}
@@ -21,37 +21,26 @@
           </div>
           <div class="card-body">
             <div class="row">
-              <div class="col-md-4"><strong>Expense</strong></div>
-              <div class="col-md-4"><strong>Minimum Payment ($)</strong></div>
-              <div class="col-md-4"><strong>Preferred Payment ($)</strong></div>
+              <div class="col-md-6"><strong>Expense</strong></div>
+              <div class="col-md-6"><strong>Minimum Payment ($)</strong></div>
             </div>
             <hr>
-            
+
             {% for item in items_by_category[category] %}
             <div class="row mb-3">
-              <div class="col-md-4">
+              <div class="col-md-6">
                 {{ item.name }}
               </div>
-              <div class="col-md-4">
-                <input 
-                  type="number" 
-                  class="form-control" 
-                  id="min_payment_{{ item.id }}" 
-                  name="min_payment_{{ item.id }}" 
+              <div class="col-md-6">
+                <input
+                  type="number"
+                  class="form-control"
+                  id="min_payment_{{ item.id }}"
+                  name="min_payment_{{ item.id }}"
                   value="{{ item.minimum_payment }}"
-                  min="0" 
-                  step="0.01" 
+                  min="0"
+                  step="0.01"
                   required>
-              </div>
-              <div class="col-md-4">
-                <input 
-                  type="number" 
-                  class="form-control" 
-                  id="pref_payment_{{ item.id }}" 
-                  name="pref_payment_{{ item.id }}" 
-                  value="{{ item.preferred_payment }}"
-                  min="0" 
-                  step="0.01">
               </div>
             </div>
             {% endfor %}
