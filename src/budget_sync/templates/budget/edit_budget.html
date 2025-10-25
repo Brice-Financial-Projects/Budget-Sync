@@ -34,38 +34,27 @@
       <div class="card-body">
         {% for item in budget_items %}
         <div class="row mb-3 border-bottom pb-3">
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label for="item_name_{{ item.id }}" class="form-label">Expense Name</label>
-            <input 
-              type="text" 
-              class="form-control" 
-              id="item_name_{{ item.id }}" 
-              name="item_name_{{ item.id }}" 
+            <input
+              type="text"
+              class="form-control"
+              id="item_name_{{ item.id }}"
+              name="item_name_{{ item.id }}"
               value="{{ item.name }}"
               required>
           </div>
-          <div class="col-md-4">
+          <div class="col-md-6">
             <label for="min_payment_{{ item.id }}" class="form-label">Minimum Payment ($)</label>
-            <input 
-              type="number" 
-              class="form-control" 
-              id="min_payment_{{ item.id }}" 
-              name="min_payment_{{ item.id }}" 
+            <input
+              type="number"
+              class="form-control"
+              id="min_payment_{{ item.id }}"
+              name="min_payment_{{ item.id }}"
               value="{{ item.minimum_payment }}"
-              min="0" 
-              step="0.01" 
+              min="0"
+              step="0.01"
               required>
-          </div>
-          <div class="col-md-4">
-            <label for="pref_payment_{{ item.id }}" class="form-label">Preferred Payment ($)</label>
-            <input 
-              type="number" 
-              class="form-control" 
-              id="pref_payment_{{ item.id }}" 
-              name="pref_payment_{{ item.id }}" 
-              value="{{ item.preferred_payment }}"
-              min="0" 
-              step="0.01">
           </div>
         </div>
         {% endfor %}

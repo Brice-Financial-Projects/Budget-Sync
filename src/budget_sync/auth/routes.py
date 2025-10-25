@@ -4,9 +4,10 @@ from flask import render_template, redirect, url_for, flash, request
 from flask_login import login_user, logout_user, login_required, current_user
 from sqlalchemy.exc import IntegrityError
 from budget_sync.auth import auth_bp
-from budget_sync.auth.forms import LoginForm, RegistrationForm
-from budget_sync.models import User
+from budget_sync.auth.forms import LoginForm, RegistrationForm, ForgotPasswordForm, ResetPasswordForm
+from budget_sync.models import User, PasswordResetToken
 from budget_sync import db, bcrypt
+from budget_sync.helpers.email_helpers import send_password_reset_email
 
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
@@ -85,3 +86,74 @@ def logout():
     logout_user()
     flash('You have been logged out.', 'info')
     return redirect(url_for('auth.login'))
+
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+
+    form = ForgotPasswordForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+
+        # Always show success message to prevent email enumeration
+        flash('If an account exists with that email, a password reset link has been sent.', 'info')
+
+        if user:
+            # Create password reset token
+            reset_token = PasswordResetToken(user_id=user.id, expiration_hours=1)
+            db.session.add(reset_token)
+            db.session.commit()
+
+            # Generate reset link
+            reset_link = url_for('auth.reset_password', token=reset_token.token, _external=True)
+
+            # Send email
+            email_sent = send_password_reset_email(user.email, reset_link)
+
+            if email_sent:
+                print(f"✅ Password reset email sent to {user.email}")
+            else:
+                print(f"❌ Failed to send password reset email to {user.email}")
+
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/forgot_password.html', form=form)
+
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('main.dashboard'))
+
+    # Find the token
+    reset_token = PasswordResetToken.query.filter_by(token=token).first()
+
+    if not reset_token:
+        flash('Invalid or expired reset link.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if reset_token.used:
+        flash('This reset link has already been used.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if reset_token.is_expired():
+        flash('This reset link has expired. Please request a new one.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        # Update user password
+        user = User.query.get(reset_token.user_id)
+        user.password_hash = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+
+        # Mark token as used
+        reset_token.used = True
+
+        db.session.commit()
+
+        flash('Your password has been reset successfully. You can now log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('auth/reset_password.html', form=form, token=token)
