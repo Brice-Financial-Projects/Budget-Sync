@@ -117,7 +117,7 @@ def test_send_password_reset_email_content():
 
         # Check that content contains the reset link
         if content_arg:
-            assert reset_link in content_arg.value
+            assert reset_link in content_arg.get()['value']
 
 
 def test_send_password_reset_email_default_sender():
