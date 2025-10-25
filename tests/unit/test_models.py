@@ -3,8 +3,9 @@
 import sys
 import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from budget_sync import User, Profile, Budget, ExpenseCategory, BudgetItem, ExpenseTemplate
+from budget_sync.models import PasswordResetToken
 
 
 def test_new_user():
@@ -193,4 +194,69 @@ def test_budget_item_with_template():
     assert budget_item.category == 'Housing'
     assert budget_item.minimum_payment == 1000.0
     assert budget_item.preferred_payment == 1200.0
-    assert budget_item.template_id == 1 
+    assert budget_item.template_id == 1
+
+
+def test_password_reset_token_creation():
+    """
+    GIVEN a PasswordResetToken model
+    WHEN a new token is created
+    THEN check the token is generated and expiration is set correctly
+    """
+    token = PasswordResetToken(user_id=1, expiration_hours=1)
+
+    assert token.user_id == 1
+    assert token.token is not None
+    assert len(token.token) > 0
+    assert token.expires_at is not None
+    assert not token.used
+
+    # Check that expires_at is approximately 1 hour from now
+    expected_expiry = datetime.utcnow() + timedelta(hours=1)
+    time_difference = abs((token.expires_at - expected_expiry).total_seconds())
+    assert time_difference < 5  # Within 5 seconds
+
+
+def test_password_reset_token_is_expired():
+    """
+    GIVEN a PasswordResetToken
+    WHEN checking if it's expired
+    THEN return correct expiration status
+    """
+    # Create a token that expires in 1 hour (not expired)
+    token = PasswordResetToken(user_id=1, expiration_hours=1)
+    assert not token.is_expired()
+
+    # Create an expired token by manually setting expires_at in the past
+    expired_token = PasswordResetToken(user_id=1, expiration_hours=1)
+    expired_token.expires_at = datetime.utcnow() - timedelta(hours=1)
+    assert expired_token.is_expired()
+
+
+def test_password_reset_token_unique():
+    """
+    GIVEN multiple PasswordResetToken instances
+    WHEN tokens are generated
+    THEN check that each token is unique
+    """
+    token1 = PasswordResetToken(user_id=1)
+    token2 = PasswordResetToken(user_id=1)
+    token3 = PasswordResetToken(user_id=2)
+
+    assert token1.token != token2.token
+    assert token1.token != token3.token
+    assert token2.token != token3.token
+
+
+def test_password_reset_token_repr():
+    """
+    GIVEN a PasswordResetToken
+    WHEN the repr method is called
+    THEN check the string representation is correct
+    """
+    token = PasswordResetToken(user_id=1)
+    repr_str = repr(token)
+
+    assert 'PasswordResetToken' in repr_str
+    assert 'user 1' in repr_str
+    assert token.token[:8] in repr_str 
