@@ -60,3 +60,9 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Packaging
+*.egg-info/
+*.egg
+dist/
+build/
