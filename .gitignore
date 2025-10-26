@@ -60,3 +60,12 @@ Thumbs.db
 .idea/
 *.swp
 *.swo
+
+# Packaging
+*.egg-info/
+*.egg
+dist/
+build/
+
+# database dump
+budgetsync_backup.sql
