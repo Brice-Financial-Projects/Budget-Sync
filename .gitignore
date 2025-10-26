@@ -66,3 +66,6 @@ Thumbs.db
 *.egg
 dist/
 build/
+
+# database dump
+budgetsync_backup.sql
