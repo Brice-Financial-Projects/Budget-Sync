@@ -3,7 +3,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-from flask import Flask, jsonify
+from flask import Flask, jsonify, signals
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -85,9 +85,19 @@ def create_app():
 
     login_manager.login_view = "auth.login"
 
-    # Import models (ensure all models are loaded for migrations)
-    with app.app_context():
-        from budget_sync.models import Budget, User, Profile  # noqa: F401
+    # Import all models so SQLAlchemy registers every table with this db instance
+    import importlib
+    importlib.import_module("budget_sync.models")
+    from budget_sync.models import (
+            User,
+            Profile,
+            Budget,
+            ExpenseCategory,
+            ExpenseTemplate,
+            BudgetItem,
+            GrossIncome,
+            OtherIncome,
+        )  # noqa: F401
 
     # Register blueprints
     from budget_sync.budget.routes import budget_bp
@@ -112,11 +122,11 @@ def create_app():
         return jsonify({"error": "Internal server error"}), 500
 
     with app.app_context():
-        db.create_all()  # Create database tables if they don't exist
-
-        # Populate expense categories and templates
         from budget_sync.helpers.budget_helpers import populate_expense_categories
-        populate_expense_categories(db)
+        try:
+            populate_expense_categories(db)
+        except Exception as e:
+            app.logger.warning(f"Category population skipped: {e}")
 
     return app
 

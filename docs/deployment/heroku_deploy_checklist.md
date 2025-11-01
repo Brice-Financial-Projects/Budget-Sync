@@ -55,7 +55,7 @@
     SENDGRID_API_KEY=<sendgrid-key>
     ```
 
-- [ ] **Add Gunicorn**
+- [X] **Add Gunicorn**
   - Add to `requirements.txt`:
     ```
     gunicorn
@@ -63,7 +63,7 @@
     ```
   - Gunicorn is Heroku’s production-grade WSGI server.
 
-- [ ] **Create `Procfile`**
+- [X] **Create `Procfile`**
   ```bash
   web: gunicorn "src.budget_sync.app:create_app()"
   ```
