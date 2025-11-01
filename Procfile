@@ -1,0 +1,1 @@
+web: gunicorn "src.budget_sync:create_app()"

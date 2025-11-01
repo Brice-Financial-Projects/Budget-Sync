@@ -6,7 +6,7 @@
 
 ## ⚙️ 1️⃣ Pre-Deployment: Database Hardening (AWS RDS)
 
-- [ ] **Enable SSL**
+- [X] **Enable SSL**
   - Modify your `.env` `DATABASE_URL`:
     ```bash
     DATABASE_URL=postgresql+psycopg2://budgetsync_admin:<PASSWORD>@budgetsync-db.cp2qu0o24dgl.us-east-2.rds.amazonaws.com:5432/budgetsync?sslmode=require
@@ -18,7 +18,7 @@
     ```
     → should return `on`.
 
-- [ ] **Strengthen DB Password**
+- [X] **Strengthen DB Password**
   - Generate a strong password (e.g., 20+ characters, symbols, mixed case).
   - In AWS Console → **RDS → Modify DB instance → Credentials settings**
   - Apply the new password immediately.
@@ -38,7 +38,7 @@
     ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_user;
     ```
 
-- [ ] **Public Access for Heroku**
+- [X] **Public Access for Heroku**
   - Keep **Public access = Yes** (Heroku needs it).
   - Limit exposure with **strong password** + `sslmode=require`.
 
