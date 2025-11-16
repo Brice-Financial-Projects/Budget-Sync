@@ -3,7 +3,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-from flask import Flask, jsonify, signals
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from flask_cors import CORS
@@ -88,16 +88,7 @@ def create_app():
     # Import all models so SQLAlchemy registers every table with this db instance
     import importlib
     importlib.import_module("budget_sync.models")
-    from budget_sync.models import (
-            User,
-            Profile,
-            Budget,
-            ExpenseCategory,
-            ExpenseTemplate,
-            BudgetItem,
-            GrossIncome,
-            OtherIncome,
-        )  # noqa: F401
+    from budget_sync import models  # noqa: F401
 
     # Register blueprints
     from budget_sync.budget.routes import budget_bp

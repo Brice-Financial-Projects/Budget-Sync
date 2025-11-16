@@ -47,7 +47,7 @@ def populate_expense_categories(db):
     from flask import current_app
     from budget_sync.models import ExpenseCategory, ExpenseTemplate
 
-    app = current_app._get_current_object()
+    
     with current_app.app_context():
         # Check if categories already exist
         existing = db.session.query(ExpenseCategory.id).first()
