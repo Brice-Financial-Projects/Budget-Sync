@@ -14,8 +14,9 @@ concurrency:
 env:
   PYTHON_VERSION: "3.12"
   FLASK_ENV: testing
-  FLASK_APP: "budget_sync:create_app()"   # <-- REQUIRED FIX
-  FLASK_RUN_FROM_CLI: "true"              # <-- ensures CLI loads factory
+  FLASK_APP: "budget_sync:create_app()"
+  FLASK_RUN_FROM_CLI: "true"
+  PYTHONPATH: "${{ github.workspace }}/src"     # <-- CRUCIAL FIX
   CI: "true"
   REDIS_URL: redis://localhost:6379/0
   SENDGRID_API_KEY: "ci-dummy"
@@ -81,8 +82,8 @@ jobs:
           DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
         run: |
           echo "Running migrations..."
-          echo "Using FLASK_APP=${FLASK_APP}"
-          echo "DATABASE_URL=$DATABASE_URL"
+          echo "FLASK_APP=$FLASK_APP"
+          echo "PYTHONPATH=$PYTHONPATH"
           flask db upgrade
 
       # -----------------------------------------------------
