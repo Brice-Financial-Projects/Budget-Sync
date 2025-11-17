@@ -9,6 +9,9 @@ A comprehensive budgeting application that helps users manage their finances, tr
 | **main** | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml) | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/main) | ![License](https://img.shields.io/github/license/brice-financial-projects/budget-sync) |
 | **dev**  | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=dev)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml)  | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/dev) | ![License](https://img.shields.io/github/license/brice-financial-projects/budget-sync)|
 
+**Version:** v0.1.0  
+**Status:** Early Release (MVP)
+
 ## Features
 
 - **User Management**
@@ -166,3 +169,27 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - OpenWeather API for weather data
 - Bootstrap for UI components
 - Flask community for excellent documentation
+
+## Version History
+
+### v0.1.0 — Initial Release
+- Authentication
+- Budget creation
+- Weather API
+- DB-backed sessions
+
+### v0.2.0 — Deployment (Coming Soon)
+- Full production deployment
+- RDS integration
+- Logging & error handling improvements
+- Entry gateway
+
+### v0.3.0 — Stripe Paywall (Planned)
+- Stripe Checkout
+- Webhooks
+- Paid-tier gating
+
+### v1.0.0 — Architecture Refactor (Planned)
+- Modular src/ layout
+- Blueprints
+- Full test suite
