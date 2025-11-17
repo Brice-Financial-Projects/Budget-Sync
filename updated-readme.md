@@ -2,6 +2,16 @@
 
 A comprehensive budgeting application that helps users manage their finances, track income sources, and plan expenses while considering tax implications.
 
+## 📊 Project Status
+
+| Branch | CI Status                                                                                                                                                                                               | Coverage | Python | Last Commit | License |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------|-------------|----------|
+| **main** | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml) | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/main) | ![License](https://img.shields.io/github/license/brice-financial-projects/budget-sync) |
+| **dev**  | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=dev)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml)  | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/dev) | ![License](https://img.shields.io/github/license/brice-financial-projects/budget-sync)|
+
+**Version:** v0.1.0  
+**Status:** Early Release (MVP)
+
 ## Features
 
 - **User Management**
@@ -52,6 +62,8 @@ cd financial-budget_sync
 ```
 
 2. Create and activate a virtual environment:
+
+Using Pip:
 ```bash
 python -m venv venv
 source venv/bin/activate  # Linux/Mac
@@ -59,9 +71,22 @@ source venv/bin/activate  # Linux/Mac
 venv\Scripts\activate  # Windows
 ```
 
+Using UV:
+```bash
+uv init
+uv venv
+# to activate
+source .venv/bin/activate
+```
+
 3. Install dependencies:
+Pip:
 ```bash
 pip install -r requirements.txt
+```
+UV:
+```bash
+uv sync
 ```
 
 4. Set up environment variables in `.env`:
@@ -82,13 +107,15 @@ flask db upgrade
 6. Run the application:
 ```bash
 flask run
+# or
+python3 run.py
 ```
 
 ## Project Structure
 
 The application follows a modular structure based on Flask blueprints:
 
-- **app/** - Main application package
+- **src/budget_sync/** - Main application package
   - **auth/** - Authentication functionality
   - **budget/** - Budget management features
   - **profile/** - User profile management
@@ -210,3 +237,27 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 - OpenWeather API for weather data
 - Bootstrap for UI components
 - Flask community for excellent documentation
+
+## Version History
+
+### v0.1.0 — Initial Release
+- Authentication
+- Budget creation
+- Weather API
+- DB-backed sessions
+
+### v0.2.0 — Deployment (Coming Soon)
+- Full production deployment
+- RDS integration
+- Logging & error handling improvements
+- Entry gateway
+
+### v0.3.0 — Stripe Paywall (Planned)
+- Stripe Checkout
+- Webhooks
+- Paid-tier gating
+
+### v1.0.0 — Architecture Refactor (Planned)
+- Modular src/ layout
+- Blueprints
+- Full test suite
