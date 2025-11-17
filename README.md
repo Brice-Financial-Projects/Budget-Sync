@@ -4,10 +4,10 @@ A comprehensive budgeting application that helps users manage their finances, tr
 
 ## 📊 Project Status
 
-| Branch | CI Status | Coverage | Python | Last Commit | License |
-|--------|-----------|----------|--------|-------------|----------|
-| **main** | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml) | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/main) | ![License](https://img.shields.io/github/license/Brice-Financial-Projects/Budget-Sync) |
-| **dev**  | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml/badge.svg?branch=dev)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml) | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/dev) | ![License](https://img.shields.io/github/license/Brice-Financial-Projects/Budget-Sync) |
+| Branch | CI Status                                                                                                                                                                                               | Coverage | Python | Last Commit | License |
+|--------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|----------|--------|-------------|----------|
+| **main** | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=main)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml) | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/main) | ![License](https://img.shields.io/github/license/Brice-Financial-Projects/Budget-Sync) |
+| **dev**  | [![CI/CD](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci-cd.yml/badge.svg?branch=dev)](https://github.com/Brice-Financial-Projects/Budget-Sync/actions/workflows/ci.yml)  | ![Coverage](https://img.shields.io/badge/Coverage-Auto--Generated-blue) | ![Python](https://img.shields.io/badge/Python-3.12-blue?logo=python) | ![Last Commit](https://img.shields.io/github/last-commit/Brice-Financial-Projects/Budget-Sync/dev) | ![License](https://img.shields.io/github/license/Brice-Financial-Projects/Budget-Sync) |
 
 ## Features
 
