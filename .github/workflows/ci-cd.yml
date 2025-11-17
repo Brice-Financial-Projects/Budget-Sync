@@ -94,6 +94,10 @@ jobs:
         run: |
           [ -f pytest.ini ] && cat pytest.ini || echo "pytest.ini not found"
 
+      - name: Run database migrations
+        run: |
+          flask db upgrade
+
       - name: Run tests
         env:
           DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
