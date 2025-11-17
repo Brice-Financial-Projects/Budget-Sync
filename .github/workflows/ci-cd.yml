@@ -14,6 +14,8 @@ concurrency:
 env:
   PYTHON_VERSION: "3.12"
   FLASK_ENV: testing
+  FLASK_APP: "budget_sync:create_app()"   # <-- REQUIRED FIX
+  FLASK_RUN_FROM_CLI: "true"              # <-- ensures CLI loads factory
   CI: "true"
   REDIS_URL: redis://localhost:6379/0
   SENDGRID_API_KEY: "ci-dummy"
@@ -56,63 +58,44 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
-            pyproject.toml
-            poetry.lock
 
       - name: Install dependencies
         run: |
           python -m pip install -U pip wheel
-          if [ -f requirements-dev.txt ]; then
-            pip install -r requirements-dev.txt
-          fi
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          # Ensure pytest/ruff are present if not declared in requirements files
-          python - <<'PY'
-          import importlib, sys
-          need = []
-          for pkg in ("pytest","pytest-cov","ruff"):
-              try: importlib.import_module(pkg.replace("-","_"))
-              except ImportError: need.append(pkg)
-          if need:
-              import subprocess; subprocess.check_call([sys.executable,"-m","pip","install",*need])
-          PY
+          pip install -r requirements-dev.txt || true
+          pip install -r requirements.txt || true
 
       - name: Ruff (lint)
         run: ruff check .
 
-      - name: Show pytest.ini (debug)
+      - name: Show pytest.ini
         if: always()
         run: |
           [ -f pytest.ini ] && cat pytest.ini || echo "pytest.ini not found"
 
-      # -----------------------------
-      #        🔥 DB MIGRATIONS FIX
-      # -----------------------------
-      - name: Run database migrations
+      # -----------------------------------------------------
+      #                🔥 MIGRATIONS
+      # -----------------------------------------------------
+      - name: Run Alembic Migrations
         env:
           DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
         run: |
-          echo "Running migrations against test DB..."
-          echo "DATABASE_URL: $DATABASE_URL"
+          echo "Running migrations..."
+          echo "Using FLASK_APP=${FLASK_APP}"
+          echo "DATABASE_URL=$DATABASE_URL"
           flask db upgrade
 
-      # -----------------------------
-      #            TESTS
-      # -----------------------------
+      # -----------------------------------------------------
+      #                🔥 TESTS
+      # -----------------------------------------------------
       - name: Run tests
         env:
           DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
         run: |
-          echo "Using Postgres test database"
+          echo "Using test DB"
           pytest -q --cov=app --cov=src --cov-report=xml --maxfail=1
 
-      - name: Upload coverage to Actions
+      - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
