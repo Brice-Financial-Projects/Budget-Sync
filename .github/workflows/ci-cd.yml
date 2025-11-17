@@ -13,12 +13,12 @@ concurrency:
 
 env:
   PYTHON_VERSION: "3.12"
-  # Test-time env; override via GitHub Secrets in real deployments
   FLASK_ENV: testing
+  FLASK_APP: "budget_sync:create_app()"
+  FLASK_RUN_FROM_CLI: "true"
+  PYTHONPATH: "${{ github.workspace }}/src"     # <-- CRUCIAL FIX
   CI: "true"
-  # Local Redis used by tests; budget_sync should read REDIS_URL
   REDIS_URL: redis://localhost:6379/0
-  # Dummies so code that expects these won't crash in CI (don't send real emails!)
   SENDGRID_API_KEY: "ci-dummy"
   OPENWEATHER_API_KEY: "ci-dummy"
   FLASK_SECRET_KEY: "ci-secret"
@@ -59,53 +59,49 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: ${{ env.PYTHON_VERSION }}
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
-            pyproject.toml
-            poetry.lock
 
       - name: Install dependencies
         run: |
           python -m pip install -U pip wheel
-          if [ -f requirements-dev.txt ]; then
-            pip install -r requirements-dev.txt
-          fi
-          if [ -f requirements.txt ]; then
-            pip install -r requirements.txt
-          fi
-          # Safety net if dev reqs aren't defined
-          python - <<'PY'
-          import importlib, sys
-          need = []
-          for pkg in ("pytest","pytest-cov","ruff"):
-              try: importlib.import_module(pkg.replace("-","_"))
-              except ImportError: need.append(pkg)
-          if need:
-              import subprocess; subprocess.check_call([sys.executable,"-m","pip","install",*need])
-          PY
+          pip install -r requirements-dev.txt || true
+          pip install -r requirements.txt || true
 
       - name: Ruff (lint)
         run: ruff check .
 
-      - name: Show pytest.ini (debug)
+      - name: Show pytest.ini
         if: always()
         run: |
           [ -f pytest.ini ] && cat pytest.ini || echo "pytest.ini not found"
 
+      # -----------------------------------------------------
+      #                🔥 MIGRATIONS
+      # -----------------------------------------------------
+      - name: Run Alembic Migrations
+        env:
+          DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
+        run: |
+          echo "Running migrations..."
+          echo "FLASK_APP=$FLASK_APP"
+          echo "PYTHONPATH=$PYTHONPATH"
+          flask db upgrade
+
+      # -----------------------------------------------------
+      #                🔥 TESTS
+      # -----------------------------------------------------
       - name: Run tests
         env:
           DATABASE_URL: "postgresql+psycopg2://testuser:testpass@localhost:5432/testdb"
         run: |
-          echo "Using Postgres test database"
+          echo "Using test DB"
           pytest -q --cov=app --cov=src --cov-report=xml --maxfail=1
 
-      - name: Upload coverage to Actions
+      - name: Upload coverage
         uses: actions/upload-artifact@v4
         with:
           name: coverage-xml
           path: coverage.xml
+
 
 #  docker-build-push:
 #    name: Build & Push Docker (GHCR)

@@ -61,6 +61,7 @@ dependencies = [
     "WTForms==3.0.1",
     "blinker==1.9.0",
     "sendgrid>=6.12.5",
+    "gunicorn>=23.0.0",
 ]
 
 [project.optional-dependencies]
